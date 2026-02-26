@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Entity.h"
+#include "Creature.h"
+
 #include <vector>
 #include <iostream>
 
