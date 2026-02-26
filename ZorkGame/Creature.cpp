@@ -13,10 +13,24 @@ Creature::~Creature() {
 	}
 }
 
-void Creature::update() {
-	std::cout << "Creature " << name << " updated." << std::endl;
-	std::cout << "This creature is described as " << description << std::endl;
-	printContains();
+void Creature::printContains() const {
+	std::cout << "\t";
+	for (auto& elem : contains) {
+		std::cout << elem->getName() << "\t";
+	}
+}
+
+void Creature::display() {
+	if (type == EntityType::Player)
+		return;
+	std::cout << " - A creature that goes by the mighty name of " << name
+			<< ".\nIt is described as " << description << ".\n";
+	if (contains.size() > 0) {
+		std::cout << "It also has in its inventory:\n";
+		printContains();
+		std::cout << "\n";
+	}
+	std::cout << std::endl;
 }
 
 void Creature::takeDamage(int damage) {

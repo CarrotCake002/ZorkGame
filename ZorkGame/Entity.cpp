@@ -5,21 +5,39 @@ Entity::Entity(std::string name, std::string description) : name(name), descript
 }
 
 void Entity::printContains() const {
-	if (contains.size() > 0) {
-		std::cout << "It also contains:\n\t";
-		for (auto& elem : contains) {
-			std::cout << elem->getName() << "\t";
-		}
-		std::cout << std::endl;
-	}
+	std::cout << "\t";
+	for (auto& elem : contains) {
+		std::cout << elem->getName() << "\t";
+	}	
 }
 
-void Entity::update() {
-	std::cout << "Entity " << name << " updated." << "\n";
-	std::cout << "Entity is described as " << description << "\n";
-	printContains();
+void Entity::display() {
+	std::cout << " - A " << name << " which is described as " << description << ".\n";
+	if (contains.size() > 0) {
+		std::cout << "It also contains:\n";
+		printContains();
+		std::cout << "\n";
+	}
+	std::cout << std::endl;
 }
 
 void Entity::addItem(Entity* item) {
 	contains.push_back(item);
+}
+
+Entity *Entity::removeItem(std::string target) {
+	std::string itemName;
+	Entity* item = nullptr;
+
+	std::transform(target.begin(), target.end(), target.begin(), ::tolower);
+	for (auto it = contains.begin(); it != contains.end(); ++it) {
+		itemName = (*it)->getName();
+		std::transform(itemName.begin(), itemName.end(), itemName.begin(), ::tolower);
+		if (itemName == target) {
+			item = *it;
+			contains.erase(it);
+			return item;
+		}
+	}
+	return nullptr;
 }

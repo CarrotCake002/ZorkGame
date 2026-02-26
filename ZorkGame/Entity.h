@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <algorithm>
 
 enum class EntityType
 {
@@ -21,10 +22,11 @@ public:
 	Entity(std::string name, std::string description);
 	virtual ~Entity() = default;
 
-	virtual void update(void);
+	virtual void display(void);
 	virtual void printContains(void) const;
 
 	virtual void addItem(Entity* item);
+	Entity *removeItem(std::string name);
 
 	virtual std::string getName() const { return name; };
 	virtual std::string getDescription() const { return description; };
