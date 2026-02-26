@@ -1,17 +1,13 @@
 #include "World.h"
 
-World::~World()
-{
-	for (auto entity : entities)
-	{
+World::~World() {
+	for (auto entity : entities) {
 		delete entity;
 	}
 }
 
-void World::update(void)
-{
-	for (auto entity : entities)
-	{
+void World::update(void) {
+	for (auto entity : entities) {
 		entity->update();
 	}
 }
