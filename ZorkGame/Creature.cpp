@@ -14,21 +14,20 @@ Creature::~Creature() {
 }
 
 void Creature::printContains() const {
-	std::cout << "\t";
+	slowPrint("\t");
 	for (auto& elem : contains) {
-		std::cout << elem->getName() << "\t";
+		slowPrint(elem->getName() + "\t");
 	}
 }
 
 void Creature::display() {
 	if (type == EntityType::Player)
 		return;
-	std::cout << " - A creature that goes by the mighty name of " << name
-			<< ".\nIt is described as " << description << ".\n";
+	slowPrint(" - A creature that goes by the mighty name of " + name + ".\nIt is described as " + description + ".\n");
 	if (contains.size() > 0) {
-		std::cout << "It also has in its inventory:\n";
+		slowPrint("It also has in its inventory:\n");
 		printContains();
-		std::cout << "\n";
+		slowPrint("\n");
 	}
 	std::cout << std::endl;
 }

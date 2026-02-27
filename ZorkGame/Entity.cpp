@@ -5,18 +5,18 @@ Entity::Entity(std::string name, std::string description) : name(name), descript
 }
 
 void Entity::printContains() const {
-	std::cout << "\t";
+	slowPrint("\t");
 	for (auto& elem : contains) {
-		std::cout << elem->getName() << "\t";
-	}	
+		slowPrint(elem->getName() + "\t");
+	}
 }
 
 void Entity::display() {
-	std::cout << " - A " << name << " which is described as " << description << ".\n";
+	slowPrint(" - A " + name + " which is described as " + description + ".\n");
 	if (contains.size() > 0) {
-		std::cout << "It also contains:\n";
+		slowPrint("It also contains:\n");
 		printContains();
-		std::cout << "\n";
+		slowPrint("\n");
 	}
 	std::cout << std::endl;
 }

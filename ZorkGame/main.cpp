@@ -4,6 +4,8 @@ int main() {
     int status = true;
     World world;
 
+	slowPrint("Welcome to Zork! The game is still in development, but feel free to explore the world and test out the commands! Type 'quit' to exit the game.\n");
+
     Player* player = new Player("Player", "the player character", 10, 2, EntityType::Player);
     player->addItem(new Entity("Stick", "a stick to attack enemies with"));
 
