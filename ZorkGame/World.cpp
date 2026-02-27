@@ -20,7 +20,7 @@ Entity* World::getTarget(std::string target) {
 }
 
 void World::cmdLook(void) {
-    std::cout << "You look around and see:\n\n";
+    slowPrint("You look around and see:\n\n");
 	for (auto entity : entities) {
 		entity->display();
 	}
@@ -30,7 +30,7 @@ void World::cmdLook(void) {
 void World::cmdInventory(void) {
     Entity* player = getTarget("Player");
 
-    std::cout << "You check your inventory and find:\n";
+    slowPrint("You check your inventory and find:\n");
     player->printContains();
     std::cout << std::endl;
 }
@@ -40,14 +40,15 @@ int World::cmdDrop(std::string target) {
     Entity* entity = player->removeItem(target);
 
     if (entity == nullptr) {
-        std::cout << "You don't have " << target << " in your inventory." << std::endl;
+        slowPrint("You don't have " + target + " in your inventory.");
+        std::cout << std::endl;
         return 1;
     } else {
         entities.push_back(entity);
-        std::cout << "You drop the " << entity->getName() << "." << std::endl;
-        return 0;
+        slowPrint("You drop the " + entity->getName() + ".");
+        std::cout << std::endl;
     }
-
+    return 0;
 }
 
 int World::cmdTake(std::string target) {
@@ -55,32 +56,36 @@ int World::cmdTake(std::string target) {
 	Entity* player = getTarget("Player");
 
     if (entity == nullptr) {
-        std::cout << "There is no " << target << " here." << std::endl;
+        slowPrint("There is no " + target + " here.");
+        std::cout << std::endl;
         return 1;
     } else if (entity->getType() == EntityType::Player) {
-		std::cout << "There is no... wait, what? You can't take yourself! Why would you even try that?? You silly game testers..." << std::endl;
+        slowPrint("There is no... wait, what? You can't take yourself! Why would you even try that?? You silly game testers...");
+        std::cout << std::endl;
         return 1;
 	} else if (entity->getType() == EntityType::Creature) {
-		std::cout << "You can't take a creature! You can only take items." << std::endl;
+        slowPrint("You can't take a creature! You can only take items.");
+        std::cout << std::endl;
         return 1;
 	} else if (entity->getType() == EntityType::Item || entity->getType() == EntityType::None) { // temporary until the Item class is created or a different solution is found
         entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
         player->addItem(entity);
-        if (entity) {
-            std::cout << "You take the " << entity->getName() << "." << std::endl;
-            return 0;
-        }
+        slowPrint("You take the " + entity->getName() + ".");
+        std::cout << std::endl;
     } else {
-        std::cout << "You can't take that... You can only take items!" << std::endl;
+        slowPrint("You can't take that... You can only take items!");
+        std::cout << std::endl;
 		return 1;
     }
+    return 0;
 }
 
 int World::handleAction(std::string action, std::string target, std::string conjunction, std::string item) {
 	std::transform(action.begin(), action.end(), action.begin(), ::tolower);
 
 	if (action == "quit") {
-        std::cout << "Thanks for playing!" << std::endl;
+        slowPrint("Thanks for playing!");
+        std::cout << std::endl;
         quit = true;
         return 1;
     }
@@ -97,7 +102,8 @@ int World::handleAction(std::string action, std::string target, std::string conj
         cmdInventory();
     }
     else {
-        std::cout << "Sorry, I did not understand your action." << std::endl;
+        slowPrint("Sorry, I did not understand your action.");
+        std::cout << std::endl;
     }
     return 0;
 }
@@ -138,7 +144,7 @@ int World::splitCommands(std::string input) {
 int World::getInput(void) {
     std::string input;
 
-    std::cout << " > ";
+    slowPrint(" > ");
     std::getline(std::cin, input);
     if (splitCommands(input) != 0)
         return 1;

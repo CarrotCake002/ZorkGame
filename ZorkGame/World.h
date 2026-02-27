@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "Creature.h"
+#include "Utils.h"
 
 #include <vector>
 #include <iostream>
