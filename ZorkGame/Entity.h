@@ -5,6 +5,8 @@
 #include <list>
 #include <algorithm>
 
+#include "Utils.h"
+
 enum class EntityType
 {
 	None = 0,
@@ -33,7 +35,7 @@ public:
 	virtual EntityType getType() const { return type; };
 
 protected:
-	EntityType type;
+	EntityType type{};
 	std::string name;
 	std::string description;
 	std::list<Entity*> contains;
