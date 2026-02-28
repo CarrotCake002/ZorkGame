@@ -68,7 +68,7 @@ int World::cmdTake(std::string target, std::string container) {
             return 1;
         }
         if (eContainer->getType() == EntityType::Creature) {
-            slowPrint("Why are you even trying to take an item from a creature?? This is unthinkable...\n");
+            slowPrint("Stealing from other creatures will not be tolerated!\n");
             std::cout << std::endl;
             return 1;
         }
