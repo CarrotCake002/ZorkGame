@@ -72,6 +72,11 @@ int World::cmdTake(std::string target, std::string container) {
             std::cout << std::endl;
             return 1;
         }
+        if (eContainer->getType() == EntityType::Player) {
+            slowPrint("I mean uuh... sure, why not?\n\n\"You take an item from your inventory and put it back\"\n\nI mean come on you really think I'm going to risk bugs in my game to handle that.\n\nJUST STOP TRYING TO CRASH MY GAME AND PLAY\n");
+            std::cout << std::endl;
+			return 1;
+        }
         if (eContainer->getType() != EntityType::Container) {
             slowPrint("You can't take something from there! You can only take items from containers!\n");
             std::cout << std::endl;
