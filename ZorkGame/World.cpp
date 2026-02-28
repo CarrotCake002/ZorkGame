@@ -1,5 +1,37 @@
 #include "World.h"
 
+World::World() {
+    slowPrint("Welcome to Zork! The game is still in development, but feel free to explore the world and test out the commands! Type 'quit' to exit the game.\n");
+    std::cout << std::endl;
+
+    addEntity(new Player("Player", "the player character", 10, 2, EntityType::Player));
+    addEntity(new Entity("Stick", "a stick to attack enemies with"));
+    getTarget("Player")->addItem(getTarget("Stick"));
+
+	// Creation of the starting room and its content
+	addEntity(new Room("Starting Room", "a small room with a door to the north"));
+	moveToRoom(getTarget("Starting Room"));
+
+    addEntity(new Creature("NPC", "a small goofy ennemy", 10, 1));
+    addEntity(new Entity("Rock", "a rock that deals damage with every hit"));
+    getTarget("NPC")->addItem(getTarget("Rock"));
+	getTarget("Starting Room")->addItem(getTarget("NPC"));
+
+    addEntity(new Entity("Bag", "a small bag that can contain a few items", EntityType::Container));
+    addEntity(new Entity("Hat", "a cool hat for daring fashion enjoyers"));
+    addEntity(new Entity("Shirt", "an elegant shirt for formal events"));
+    addEntity(new Entity("Pants", "nice pants that would pair perfectly with a shirt"));
+    getTarget("Bag")->addItem(getTarget("Hat"));
+    getTarget("Bag")->addItem(getTarget("Shirt"));
+    getTarget("Bag")->addItem(getTarget("Pants"));
+    getTarget("Starting Room")->addItem(getTarget("Bag"));
+
+	// Creation of the north room and its content
+	addEntity(new Room("North Room", "a room to the north of the starting room"));
+	addEntity(new Creature("Guard", "a strong guard that looks like it doesn't want you to enter the north room", 20, 5));
+	getTarget("North Room")->addItem(getTarget("Guard"));
+}
+
 World::~World() {
 	for (auto entity : entities) {
 		delete entity;
@@ -16,6 +48,17 @@ Entity* World::getTarget(std::string target) const {
         }
     }
     return nullptr;
+}
+
+int World::moveToRoom(Entity* room) {
+    if (room == nullptr || room->getType() != EntityType::Room) {
+        printDialogue("You can't go there!\n");
+        return 1;
+    }
+	currentRoom = nullptr;
+    currentRoom = static_cast<Room*>(room);
+    printDialogue("You are now in the " + room->getName() + ".\n");
+    return 0;
 }
 
 int World::handleCmdDropErrors(std::string target, Entity* eTarget) const {
@@ -76,7 +119,7 @@ int World::handleCmdPutErrors(std::string target, Entity* eTarget, std::string c
         return 1;
     }
     if (eContainer->getType() == EntityType::Creature) {
-        printDialogue("Why are you even trying to give an item to a creature??\nThis is unthinkable...\n");
+        printDialogue("Why are you even trying to give an item to a creature??\nI will not allow this!\n");
         return 1;
     }
     if (eContainer->getType() != EntityType::Container) {
@@ -90,9 +133,23 @@ int World::handleCmdPutErrors(std::string target, Entity* eTarget, std::string c
     return 0;
 }
 
+bool checkConjunction(std::string action, std::string conjunction) {
+    if (action == "take" && conjunction == "from") {
+        return true;
+    }
+    if (action == "put" && (conjunction == "in" || conjunction == "into")) {
+        return true;
+    }
+    if (action == "attack" && (conjunction == "with" || conjunction == "using")) {
+        return true;
+    }
+    printDialogue("Sorry, I don't know what " + conjunction + " means.\n");
+    return false;
+}
+
 void World::cmdLook(void) const {
     printDialogue("You look around and see:\n");
-    for (auto entity : entities) {
+    for (auto &entity : currentRoom->getContains()) {
         entity->display();
     }
 }
@@ -115,18 +172,18 @@ int World::cmdDrop(std::string target) {
 
     if (handleCmdDropErrors(target, entity) != 0)
         return 1;
-    entities.push_back(entity);
+    currentRoom->addItem(entity);
     printDialogue("You drop the " + entity->getName() + ".\n");
     return 0;
 }
 
 int World::cmdTake(std::string target) {
     Entity* player = getTarget("Player");
-    Entity* entity = getTarget(target);
+    Entity* entity = currentRoom->getItem(target);
 
     if (handleCmdTakeErrors(target, entity) != 0)
 		return 1;
-    entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
+    currentRoom->removeItem(target);
     player->addItem(entity);
     printDialogue("You take the " + entity->getName() + ".\n");
     return 0;
@@ -134,8 +191,8 @@ int World::cmdTake(std::string target) {
 
 int World::cmdTakeFromContainer(std::string target, std::string container) {
     Entity* player = getTarget("Player");
-    Entity* entity = getTarget(target);
-    Entity* eContainer = getTarget(container);
+    Entity* entity = currentRoom->getItem(target);
+    Entity* eContainer = currentRoom->getItem(container);
 
     if (handleCmdTakeFromContainerErrors(target, entity, container, eContainer) != 0)
 		return 1;
@@ -146,9 +203,9 @@ int World::cmdTakeFromContainer(std::string target, std::string container) {
 }
 
 int World::cmdPut(std::string target, std::string container) {
-    Entity* eContainer = getTarget(container);
     Entity* player = getTarget("Player");
     Entity* eTarget = player->getItem(target);
+    Entity* eContainer = currentRoom->getItem(container);
 
 	if (handleCmdPutErrors(target, eTarget, container, eContainer) != 0)
 		return 1;
@@ -156,20 +213,6 @@ int World::cmdPut(std::string target, std::string container) {
 	eContainer->addItem(eTarget);
     printDialogue("You put the " + eTarget->getName() + " in the " + eContainer->getName() + ".\n");
     return 0;
-}
-
-bool checkConjunction(std::string action, std::string conjunction) {
-	if (action == "take" && conjunction == "from") {
-        return true;
-    }
-    if (action == "put" && (conjunction == "in" || conjunction == "into")) {
-        return true;
-    }
-    if (action == "attack" && (conjunction == "with" || conjunction == "using")) {
-        return true;
-	}
-	printDialogue("Sorry, I don't know what " + conjunction + " means.\n");
-    return false;
 }
 
 int World::handleAction(std::string action, std::string target, std::string conjunction, std::string container) {
