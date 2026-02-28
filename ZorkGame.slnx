@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="ZorkGame/ZorkGame.vcxproj" />
+  <Project Path="ZorkGame/ZorkGame.vcxproj" Id="57c3f513-949f-4f83-9462-0139131a8cf9" />
 </Solution>

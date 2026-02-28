@@ -55,10 +55,45 @@ int World::cmdDrop(std::string target) {
     return 0;
 }
 
-int World::cmdTake(std::string target) {
-    Entity* entity = getTarget(target);
+int World::cmdTake(std::string target, std::string container) {
 	Entity* player = getTarget("Player");
+    Entity* entity = nullptr;
+	Entity* eContainer = nullptr;
 
+    if (container != "") {
+        eContainer = getTarget(container);
+        if (eContainer == nullptr) {
+            slowPrint("There is no " + container + " here.\n");
+            std::cout << std::endl;
+            return 1;
+        }
+        if (eContainer->getType() == EntityType::Creature) {
+            slowPrint("Stealing from other creatures will not be tolerated!\n");
+            std::cout << std::endl;
+            return 1;
+        }
+        if (eContainer->getType() == EntityType::Player) {
+            slowPrint("I mean uuh... sure, why not?\n\n\"You take an item from your inventory and put it back\"\n\nI mean come on you really think I'm going to risk bugs in my game to handle that.\n\nJUST STOP TRYING TO CRASH MY GAME AND PLAY\n");
+            std::cout << std::endl;
+			return 1;
+        }
+        if (eContainer->getType() != EntityType::Container) {
+            slowPrint("You can't take something from there! You can only take items from containers!\n");
+            std::cout << std::endl;
+            return 1;
+        }
+        if (!eContainer->hasItem(target)) {
+            slowPrint("There is no " + target + " in the " + container + ".\n");
+            std::cout << std::endl;
+            return 1;
+        }
+        entity = eContainer->removeItem(target);
+		player->addItem(entity);
+        slowPrint("You take the " + entity->getName() + " from the " + eContainer->getName() + ".\n");
+        std::cout << std::endl;
+        return 0;
+    }
+	entity = getTarget(target);
     if (entity == nullptr) {
         slowPrint("There is no " + target + " here.\n");
         std::cout << std::endl;
@@ -71,7 +106,8 @@ int World::cmdTake(std::string target) {
         slowPrint("You can't take a creature! You can only take items.\n");
         std::cout << std::endl;
         return 1;
-	} else if (entity->getType() == EntityType::Item || entity->getType() == EntityType::None) { // temporary until the Item class is created or a different solution is found
+    }
+    else if (entity->getType() == EntityType::Item || entity->getType() == EntityType::None) { // temporary until the Item class is created or a different solution is found        
         entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
         player->addItem(entity);
         slowPrint("You take the " + entity->getName() + ".\n");
@@ -117,7 +153,7 @@ int World::cmdPut(std::string target, std::string container) {
     return 0;
 }
 
-int World::handleAction(std::string action, std::string target, std::string conjunction, std::string item) {
+int World::handleAction(std::string action, std::string target, std::string conjunction, std::string container) {
 	std::transform(action.begin(), action.end(), action.begin(), ::tolower);
 
 	if (action == "quit") {
@@ -132,14 +168,14 @@ int World::handleAction(std::string action, std::string target, std::string conj
     else if (action == "drop") {
         cmdDrop(target);
     }
-    else if (action == "take") {
-		cmdTake(target);
+    else if (action == "take" && (conjunction == "" || conjunction == "from")) {
+		cmdTake(target, container);
     }
     else if (action == "inventory" || action == "i") {
         cmdInventory();
     }
     else if (action == "put") {
-		cmdPut(target, item);
+		cmdPut(target, container);
     }
     else {
         slowPrint("Sorry, I did not understand your action.\n");
@@ -150,10 +186,10 @@ int World::handleAction(std::string action, std::string target, std::string conj
 
 int World::handleCommand(std::string command) {
     std::istringstream iss(command);
-    std::string action, target, conjunction, item;
+    std::string action, target, conjunction, container;
 
-    iss >> action >> target >> conjunction >> item;
-    if (handleAction(action, target, conjunction, item) != 0) {
+    iss >> action >> target >> conjunction >> container;
+    if (handleAction(action, target, conjunction, container) != 0) {
 		return 1;
     }
     return 0;
