@@ -12,27 +12,30 @@ enum class EntityType
 	None = 0,
 	Player = 1,
 	Item = 2,
-	Creature = 3,
-	Room = 4,
-	Exit = 5
+	Container = 3,
+	Creature = 4,
+	Room = 5,
+	Exit = 6
 };
 
 class Entity
 {
 public:
 	Entity() = default;
-	Entity(std::string name, std::string description);
+	Entity(std::string name, std::string description, EntityType type = EntityType::Item);
 	virtual ~Entity() = default;
 
 	virtual void display(void);
 	virtual void printContains(void) const;
 
 	virtual void addItem(Entity* item);
+	virtual bool hasItem(std::string name) const;
 	Entity *removeItem(std::string name);
 
 	virtual std::string getName() const { return name; };
 	virtual std::string getDescription() const { return description; };
 	virtual EntityType getType() const { return type; };
+	std::list<Entity*> getContains() const { return contains; };
 
 protected:
 	EntityType type{};

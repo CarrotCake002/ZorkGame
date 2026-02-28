@@ -6,13 +6,12 @@ World::~World() {
 	}
 }
 
-Entity* World::getTarget(std::string target) {
-    std::transform(target.begin(), target.end(), target.begin(), ::tolower);
+Entity* World::getTarget(std::string target) const {
+    target = toLower(target);
     std::string entityName;
     for (auto& entity : entities) {
 		entityName = entity->getName();
-        std::transform(entityName.begin(), entityName.end(), entityName.begin(), ::tolower);
-        if (entityName == target) {
+        if (toLower(entityName) == target) {
             return entity;
         }
     }
@@ -30,6 +29,11 @@ void World::cmdLook(void) {
 void World::cmdInventory(void) {
     Entity* player = getTarget("Player");
 
+	if (player->getContains().size() < 1) {
+        slowPrint("Your inventory is empty.\n");
+        std::cout << std::endl;
+        return;
+    }
     slowPrint("You check your inventory and find:\n");
     player->printContains();
     std::cout << std::endl;
@@ -40,12 +44,12 @@ int World::cmdDrop(std::string target) {
     Entity* entity = player->removeItem(target);
 
     if (entity == nullptr) {
-        slowPrint("You don't have " + target + " in your inventory.");
+        slowPrint("You don't have " + target + " in your inventory.\n");
         std::cout << std::endl;
         return 1;
     } else {
         entities.push_back(entity);
-        slowPrint("You drop the " + entity->getName() + ".");
+        slowPrint("You drop the " + entity->getName() + ".\n");
         std::cout << std::endl;
     }
     return 0;
@@ -56,27 +60,60 @@ int World::cmdTake(std::string target) {
 	Entity* player = getTarget("Player");
 
     if (entity == nullptr) {
-        slowPrint("There is no " + target + " here.");
+        slowPrint("There is no " + target + " here.\n");
         std::cout << std::endl;
         return 1;
     } else if (entity->getType() == EntityType::Player) {
-        slowPrint("There is no... wait, what? You can't take yourself! Why would you even try that?? You silly game testers...");
+        slowPrint("There is no... wait, what? You can't take yourself! Why would you even try that?? You silly game testers...\n");
         std::cout << std::endl;
         return 1;
 	} else if (entity->getType() == EntityType::Creature) {
-        slowPrint("You can't take a creature! You can only take items.");
+        slowPrint("You can't take a creature! You can only take items.\n");
         std::cout << std::endl;
         return 1;
 	} else if (entity->getType() == EntityType::Item || entity->getType() == EntityType::None) { // temporary until the Item class is created or a different solution is found
         entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
         player->addItem(entity);
-        slowPrint("You take the " + entity->getName() + ".");
+        slowPrint("You take the " + entity->getName() + ".\n");
         std::cout << std::endl;
     } else {
-        slowPrint("You can't take that... You can only take items!");
+        slowPrint("You can't take that... You can only take items!\n");
         std::cout << std::endl;
 		return 1;
     }
+    return 0;
+}
+
+int World::cmdPut(std::string target, std::string container) {
+	Entity* eContainer = getTarget(container);
+	Entity* player = getTarget("Player");
+    Entity* eTarget = nullptr;
+        
+    if (eContainer == nullptr) {
+        slowPrint("There is no " + container + " here.\n");
+        std::cout << std::endl;
+        return 0;
+    }
+    if (eContainer->getType() == EntityType::Creature) {
+        slowPrint("Why are you even trying to give an item to a creature?? This is unthinkable...\n");
+        std::cout << std::endl;
+        return 0;
+    }
+    if (eContainer->getType() != EntityType::Container) {
+		slowPrint("You can't put something in there! You can only put items in containers!\n");
+		std::cout << std::endl;
+        return 0;
+    }
+
+    eTarget = player->removeItem(target);
+    if (eTarget == nullptr) {
+        slowPrint("There is no " + target + " in your inventory!\n");
+        std::cout << std::endl;
+        return 0;
+	}
+	eContainer->addItem(eTarget);
+    slowPrint("You put the " + eTarget->getName() + " in the " + eContainer->getName() + ".\n");
+	std::cout << std::endl;
     return 0;
 }
 
@@ -84,7 +121,7 @@ int World::handleAction(std::string action, std::string target, std::string conj
 	std::transform(action.begin(), action.end(), action.begin(), ::tolower);
 
 	if (action == "quit") {
-        slowPrint("Thanks for playing!");
+        slowPrint("Thanks for playing!\n");
         std::cout << std::endl;
         quit = true;
         return 1;
@@ -101,8 +138,11 @@ int World::handleAction(std::string action, std::string target, std::string conj
     else if (action == "inventory" || action == "i") {
         cmdInventory();
     }
+    else if (action == "put") {
+		cmdPut(target, item);
+    }
     else {
-        slowPrint("Sorry, I did not understand your action.");
+        slowPrint("Sorry, I did not understand your action.\n");
         std::cout << std::endl;
     }
     return 0;
