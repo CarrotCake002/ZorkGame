@@ -4,6 +4,7 @@
 #include "Creature.h"
 #include "Utils.h"
 #include "Room.h"
+#include "Exit.h"
 
 #include <vector>
 #include <iostream>
