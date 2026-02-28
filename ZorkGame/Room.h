@@ -13,6 +13,8 @@ enum class Direction {
 	DOWN
 };
 
+class Exit;
+
 class Room : public Entity
 {
 public:
@@ -20,11 +22,7 @@ public:
 	Room(std::string name, std::string description);
 	~Room() = default;
 
+	void addExit(Exit* exit) { exits.push_back(exit); };
 private:
-};
-
-struct Exit {
-	Direction dir;
-	Room* source;
-	Room* destination;
+	std::vector<Exit*> exits;
 };

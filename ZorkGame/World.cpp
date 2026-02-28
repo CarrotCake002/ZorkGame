@@ -30,6 +30,12 @@ World::World() {
 	addEntity(new Room("North Room", "a room to the north of the starting room"));
 	addEntity(new Creature("Guard", "a strong guard that looks like it doesn't want you to enter the north room", 20, 5));
 	getTarget("North Room")->addItem(getTarget("Guard"));
+
+	// Creation of the exit between the starting room and the north room
+	addEntity(new Exit("StartToNorth", Direction::NORTH, static_cast<Room*>(getTarget("Starting Room")), static_cast<Room*>(getTarget("North Room"))));
+	getTarget("Starting Room")->addItem(getTarget("StartToNorth"));
+	addEntity(new Exit("NorthToStart", Direction::SOUTH, static_cast<Room*>(getTarget("North Room")), static_cast<Room*>(getTarget("Starting Room"))));
+	getTarget("North Room")->addItem(getTarget("NorthToStart"));
 }
 
 World::~World() {
@@ -150,7 +156,10 @@ bool checkConjunction(std::string action, std::string conjunction) {
 void World::cmdLook(void) const {
     printDialogue("You look around and see:\n");
     for (auto &entity : currentRoom->getContains()) {
-        entity->display();
+        if (entity->getType() == EntityType::Exit)
+			static_cast<Exit*>(entity)->display();
+        else
+            entity->display();
     }
 }
 

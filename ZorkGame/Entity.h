@@ -33,10 +33,10 @@ public:
 	Entity* getItem(std::string name) const;
 	Entity* removeItem(std::string name);
 
-	virtual std::string getName() const { return name; };
-	virtual std::string getDescription() const { return description; };
-	virtual EntityType getType() const { return type; };
-	std::list<Entity*> getContains() const { return contains; };
+	virtual std::string getName(void) const { return name; };
+	virtual std::string getDescription(void) const { return description; };
+	virtual EntityType getType(void) const { return type; };
+	std::list<Entity*> getContains(void) const { return contains; };
 
 protected:
 	EntityType type = EntityType::Item;
