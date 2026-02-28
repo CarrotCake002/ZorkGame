@@ -9,3 +9,8 @@ void slowPrint(const std::string& text, int delayMs)
     }
     std::cout << std::flush;
 }
+
+std::string toLower(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::tolower(c); });
+    return str;
+}

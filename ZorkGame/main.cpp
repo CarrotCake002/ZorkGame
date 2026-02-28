@@ -5,6 +5,7 @@ int main() {
     World world;
 
 	slowPrint("Welcome to Zork! The game is still in development, but feel free to explore the world and test out the commands! Type 'quit' to exit the game.\n");
+    std::cout << std::endl;
 
     Player* player = new Player("Player", "the player character", 10, 2, EntityType::Player);
     player->addItem(new Entity("Stick", "a stick to attack enemies with"));
@@ -15,7 +16,7 @@ int main() {
     world.addEntity(player);
 	world.addEntity(creature);
 
-    Entity* bag = new Entity("Bag", "a small bag that can contain a few items");
+    Entity* bag = new Entity("Bag", "a small bag that can contain a few items", EntityType::Container);
 
     Entity* hat = new Entity("Hat", "a cool hat for daring fashion enjoyers");
     Entity* shirt = new Entity("Shirt", "an elegant shirt for formal events");

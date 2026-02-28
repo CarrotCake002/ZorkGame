@@ -27,6 +27,7 @@ public:
 	void cmdInventory(void);
 	int cmdTake(std::string target);
 	int cmdDrop(std::string target);
+	int cmdPut(std::string target, std::string item);
 
 	bool isRunning(void) const { return !quit; };
 
@@ -36,7 +37,7 @@ public:
 	int handleCommand(std::string command);
 
 	int handleAction(std::string action, std::string target, std::string conjunction, std::string item);
-	Entity *getTarget(std::string target);
+	Entity *getTarget(std::string target) const;
 
 	void addEntity(Entity* entity) { entities.push_back(entity); }
 

@@ -1,7 +1,7 @@
 #include "Entity.h"
 
-Entity::Entity(std::string name, std::string description) : name(name), description(description) {
-	this->type = EntityType::None;
+Entity::Entity(std::string name, std::string description, EntityType type) : name(name), description(description), type(type) {
+
 }
 
 void Entity::printContains() const {
@@ -25,15 +25,24 @@ void Entity::addItem(Entity* item) {
 	contains.push_back(item);
 }
 
+bool Entity::hasItem(std::string name) const {
+	name = toLower(name);
+	for (auto& item : this->contains) {
+		if (toLower(item->getName()) == name) {
+			return true;
+		}
+	}
+	return false;
+}
+
 Entity *Entity::removeItem(std::string target) {
 	std::string itemName;
 	Entity* item = nullptr;
 
-	std::transform(target.begin(), target.end(), target.begin(), ::tolower);
+	target = toLower(target);
 	for (auto it = contains.begin(); it != contains.end(); ++it) {
 		itemName = (*it)->getName();
-		std::transform(itemName.begin(), itemName.end(), itemName.begin(), ::tolower);
-		if (itemName == target) {
+		if (toLower(itemName) == target) {
 			item = *it;
 			contains.erase(it);
 			return item;
