@@ -27,7 +27,7 @@ void Creature::display() {
 	if (contains.size() > 0) {
 		slowPrint("It also has in its inventory:\n");
 		printContains();
-		slowPrint("\n");
+		std::cout << "\n";
 	}
 	std::cout << std::endl;
 }
