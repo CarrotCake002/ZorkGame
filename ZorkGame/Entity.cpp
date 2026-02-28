@@ -35,6 +35,18 @@ bool Entity::hasItem(std::string name) const {
 	return false;
 }
 
+Entity* Entity::getItem(std::string target) const {
+	std::string itemName;
+	target = toLower(target);
+	for (auto& item : this->contains) {
+		itemName = toLower(item->getName());
+		if (itemName == target) {
+			return item;
+		}
+	}
+	return nullptr;
+}
+
 Entity *Entity::removeItem(std::string target) {
 	std::string itemName;
 	Entity* item = nullptr;

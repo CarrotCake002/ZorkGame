@@ -30,7 +30,8 @@ public:
 
 	virtual void addItem(Entity* item);
 	virtual bool hasItem(std::string name) const;
-	Entity *removeItem(std::string name);
+	Entity* getItem(std::string name) const;
+	Entity* removeItem(std::string name);
 
 	virtual std::string getName() const { return name; };
 	virtual std::string getDescription() const { return description; };
@@ -38,7 +39,7 @@ public:
 	std::list<Entity*> getContains() const { return contains; };
 
 protected:
-	EntityType type{};
+	EntityType type = EntityType::Item;
 	std::string name;
 	std::string description;
 	std::list<Entity*> contains;

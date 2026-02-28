@@ -23,10 +23,18 @@ public:
 	World() = default;
 	~World();
 
-	void cmdLook(void);
-	void cmdInventory(void);
-	int cmdTake(std::string target, std::string container);
+	// Display commands (no logic)
+	void cmdLook(void) const;
+	void cmdInventory(void) const;
+
+	int handleCmdDropErrors(std::string target, Entity* eTarget) const;
+	int handleCmdTakeErrors(std::string target, Entity* eTarget) const;
+	int handleCmdTakeFromContainerErrors(std::string target, Entity* eTarget, std::string container, Entity* eContainer) const;
+	int handleCmdPutErrors(std::string target, Entity* eTarget, std::string container, Entity* eContainer) const;
+
 	int cmdDrop(std::string target);
+	int cmdTake(std::string target);
+	int cmdTakeFromContainer(std::string target, std::string container);
 	int cmdPut(std::string target, std::string item);
 
 	bool isRunning(void) const { return !quit; };
@@ -40,11 +48,11 @@ public:
 	Entity* handleContainer(std::string container) const;
 	Entity* getTarget(std::string target) const;
 
-	void addEntity(Entity* entity) { entities.push_back(entity); }
+	void addEntity(Entity* entity) { entities.push_back(entity); };
 
 private:
 	bool quit = false;
 	std::vector<std::string> commands;
-	std::vector<Entity *> entities;
+	std::vector<Entity*> entities;
 };
 
