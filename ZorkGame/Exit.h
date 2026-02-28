@@ -1,7 +1,18 @@
 #pragma once
 
 #include "Entity.h"
-#include "Room.h"
+
+class Room;
+
+enum class Direction {
+	NORTH,
+	SOUTH,
+	EAST,
+	WEST,
+	UP,
+	DOWN,
+	NONE = -1
+};
 
 class Exit : public Entity
 {
@@ -16,6 +27,8 @@ public:
 	Room* getDestination(void) const { return destination; };
 
 	std::string getStrDirection(void) const;
+
+	static Direction strToDirection(std::string str);
 private:
 	Direction direction;
 	Room* source;

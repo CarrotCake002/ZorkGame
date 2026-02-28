@@ -1,4 +1,5 @@
 #include "Exit.h"
+#include "Room.h"
 
 Exit::Exit(std::string name, Direction dir, Room* source, Room* destination)
 	: Entity(name, "an exit to another room", EntityType::Exit), direction(dir), source(source), destination(destination) {
@@ -26,5 +27,30 @@ std::string Exit::getStrDirection() const {
 		return "Down";
 	default:
 		return "";
+	}
+}
+
+Direction Exit::strToDirection(std::string str) {
+	str = toLower(str);
+	if (str == "north") {
+		return Direction::NORTH;
+	}
+	else if (str == "south") {
+		return Direction::SOUTH;
+	}
+	else if (str == "east") {
+		return Direction::EAST;
+	}
+	else if (str == "west") {
+		return Direction::WEST;
+	}
+	else if (str == "up") {
+		return Direction::UP;
+	}
+	else if (str == "down") {
+		return Direction::DOWN;
+	}
+	else {
+		return Direction::NONE;
 	}
 }

@@ -1,19 +1,9 @@
 #pragma once
 
 #include "Entity.h"
+#include "Exit.h"
 
 #include <array>
-
-enum class Direction {
-	NORTH,
-	SOUTH,
-	EAST,
-	WEST,
-	UP,
-	DOWN
-};
-
-class Exit;
 
 class Room : public Entity
 {
@@ -23,6 +13,8 @@ public:
 	~Room() = default;
 
 	void addExit(Exit* exit) { exits.push_back(exit); };
+	Exit* getExit(Direction dir) const;
+
 private:
 	std::vector<Exit*> exits;
 };

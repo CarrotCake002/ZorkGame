@@ -139,6 +139,14 @@ int World::handleCmdPutErrors(std::string target, Entity* eTarget, std::string c
     return 0;
 }
 
+int World::handleCmdWalkErrors(Exit* exit) const {
+    if (exit == nullptr) {
+        printDialogue("That's not a valid direction!\n");
+        return 1;
+    }
+    return 0;
+}
+
 bool checkConjunction(std::string action, std::string conjunction) {
     if (action == "take" && conjunction == "from") {
         return true;
@@ -224,33 +232,47 @@ int World::cmdPut(std::string target, std::string container) {
     return 0;
 }
 
+int World::cmdWalk(std::string target) {
+	Direction dir = Exit::strToDirection(target);
+    Exit* exit = currentRoom->getExit(dir);
+
+    if (handleCmdWalkErrors(exit) != 0)
+        return 1;
+	currentRoom = exit->getDestination();
+	printDialogue("You walk " + target + " and enter the " + currentRoom->getName() + ".\n");
+    return 0;
+}
+
 int World::handleAction(std::string action, std::string target, std::string conjunction, std::string container) {
-	if (action == "quit") {
+	if (action == "quit" && target.empty()) {
         printDialogue("Thanks for playing!\n");
         quit = true;
         return 1;
     }
-    else if (action == "look") {
+    else if (action == "look" && target.empty()) {
         cmdLook();
     }
-    else if (action == "drop") {
+    else if (action == "drop" && conjunction.empty()) {
         cmdDrop(target);
+    }
+    else if (action == "take" && conjunction.empty()) {
+		cmdTake(target);
     }
     else if (action == "take" && !conjunction.empty()) {
         if (!checkConjunction(action, conjunction))
             return 0;
 		cmdTakeFromContainer(target, container);
     }
-    else if (action == "take") {
-		cmdTake(target);
-    }
-    else if (action == "inventory" || action == "i") {
+    else if ((action == "inventory" || action == "i") && target.empty()) {
         cmdInventory();
     }
     else if (action == "put" && !conjunction.empty()) {
         if (!checkConjunction(action, conjunction))
             return 0;
 		cmdPut(target, container);
+    }
+    else if (action == "walk" && conjunction.empty()) {
+        cmdWalk(target);
     }
     else {
         printDialogue("Sorry, I did not understand your action.\n");

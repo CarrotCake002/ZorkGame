@@ -34,12 +34,14 @@ public:
 	int handleCmdTakeErrors(std::string target, Entity* eTarget) const;
 	int handleCmdTakeFromContainerErrors(std::string target, Entity* eTarget, std::string container, Entity* eContainer) const;
 	int handleCmdPutErrors(std::string target, Entity* eTarget, std::string container, Entity* eContainer) const;
+	int handleCmdWalkErrors(Exit* exit) const;
 
 	// ACTION COMMANDS
 	int cmdDrop(std::string target);
 	int cmdTake(std::string target);
 	int cmdTakeFromContainer(std::string target, std::string container);
 	int cmdPut(std::string target, std::string item);
+	int cmdWalk(std::string target);
 
 	// MOVEMENT FUNCTIONS
 	int moveToRoom(Entity* room);
