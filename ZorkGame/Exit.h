@@ -19,6 +19,7 @@ class Exit : public Entity
 public:
 	Exit() = default;
 	Exit(std::string name, Direction dir, Room* source, Room* destination);
+	~Exit() = default;
 
 	void display(void) override;
 

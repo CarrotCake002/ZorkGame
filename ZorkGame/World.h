@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include "Room.h"
 #include "Exit.h"
+#include "Weapon.h"
 
 #include <vector>
 #include <iostream>
@@ -35,6 +36,7 @@ public:
 	int handleCmdTakeFromContainerErrors(std::string target, Entity* eTarget, std::string container, Entity* eContainer) const;
 	int handleCmdPutErrors(std::string target, Entity* eTarget, std::string container, Entity* eContainer) const;
 	int handleCmdWalkErrors(Exit* exit) const;
+	int handleAttack(Entity* target, Entity* eWeapon, std::string weapon) const;
 
 	// ACTION COMMANDS
 	int cmdDrop(std::string target);
@@ -42,6 +44,7 @@ public:
 	int cmdTakeFromContainer(std::string target, std::string container);
 	int cmdPut(std::string target, std::string item);
 	int cmdWalk(std::string target);
+	int cmdAttack(std::string target, std::string weapon);
 
 	// MOVEMENT FUNCTIONS
 	int moveToRoom(Entity* room);

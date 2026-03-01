@@ -39,3 +39,15 @@ void printDialogue(const std::string& text, int delayMs)
     slowPrint(text, delayMs);
     std::cout << std::endl;
 }
+
+// FUNCTIONS FOR DAMAGE MODIFIERS
+
+static std::random_device rd;
+static std::mt19937 gen(rd());
+static std::uniform_real_distribution<> dist(0.0, 1.0);
+
+bool rollCrit(double critChance)
+{
+    double roll = dist(gen);
+    return roll <= critChance;
+}

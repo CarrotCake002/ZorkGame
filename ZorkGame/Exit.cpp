@@ -2,7 +2,7 @@
 #include "Room.h"
 
 Exit::Exit(std::string name, Direction dir, Room* source, Room* destination)
-	: Entity(name, "an exit to another room", EntityType::Exit), direction(dir), source(source), destination(destination) {
+	: Entity(name, "an exit to another room", EntityType::EXIT), direction(dir), source(source), destination(destination) {
 
 }
 
