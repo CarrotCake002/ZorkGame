@@ -101,6 +101,7 @@ int World::handleCmdTakeErrors(std::string target, Entity* eTarget) const {
     return 0;
 }
 
+// handle this errors with containers and targets
 int World::handleCmdTakeFromContainerErrors(std::string target, Entity* eTarget, std::string container, Entity* eContainer) const {
     if (eContainer == nullptr) {
         printDialogue("There is no " + container + " here.\n");
@@ -110,7 +111,7 @@ int World::handleCmdTakeFromContainerErrors(std::string target, Entity* eTarget,
         printDialogue("Stealing from other creatures will not be tolerated!\n");
         return 1;
     }
-    if (eContainer->getType() == EntityType::PLAYER) {
+    if (eTarget->getType() == EntityType::PLAYER) {
         printDialogue("I mean uuh... sure, why not?\n\n\"You take an item from your inventory and put it back\"\n\nI mean come on you really think I'm going to risk bugs in my game to handle that.\n\nJUST STOP TRYING TO CRASH MY GAME AND PLAY\n");
         return 1;
     }
@@ -314,12 +315,15 @@ int World::handleAction(std::string action, std::string target, std::string conj
     }
     else if (action == "look" && target.empty()) {
         cmdLook();
+		return 1;
     }
     else if ((action == "inventory" || action == "i") && target.empty()) {
         cmdInventory();
+        return 1;
     }
     else if (action == "help" && target.empty()) {
         cmdHelp();
+        return 1;
     }
     else if (action == "drop" && conjunction.empty()) {
         cmdDrop(target);
@@ -329,12 +333,12 @@ int World::handleAction(std::string action, std::string target, std::string conj
     }
     else if (action == "take" && !conjunction.empty()) {
         if (!checkConjunction(action, conjunction))
-            return 0;
+            return 1;
 		cmdTakeFromContainer(target, container);
     }
     else if (action == "put" && !conjunction.empty()) {
         if (!checkConjunction(action, conjunction))
-            return 0;
+            return 1;
 		cmdPut(target, container);
     }
     else if (action == "walk" && conjunction.empty()) {
@@ -342,14 +346,12 @@ int World::handleAction(std::string action, std::string target, std::string conj
     }
     else if (action == "attack") {
         if (!checkConjunction(action, conjunction))
-            return 0;
+            return 1;
         cmdAttack(target, container);
 	}
     else {
         printDialogue("Sorry, I did not understand your action.\n");
-    }
-    if (action != "help" && action != "look" && action != "inventory" && action != "i") {
-        ennemyAttack();
+        return 1;
     }
     return 0;
 }
@@ -359,20 +361,20 @@ int World::handleCommand(std::string command) {
     std::string action, target, conjunction, container;
 
     iss >> action >> target >> conjunction >> container;
-    if (handleAction(toLower(action), toLower(target), toLower(conjunction), toLower(container)) != 0) {
-		return 1;
-    }
-    return 0;
+    return handleAction(toLower(action), toLower(target), toLower(conjunction), toLower(container));
+
 }
 
 int World::parseCommands(void) {
     std::string command;
+    int status = 0;
 
-    while (commands.size() > 0) {
+    while (!quit && commands.size() > 0) {
         command = commands.front();
         commands.erase(commands.begin());
-        if (handleCommand(command) != 0)
-			return 1;
+		status = handleCommand(command);
+        if (status == 0)
+            ennemyAttack();
     }
     return 0;
 }
