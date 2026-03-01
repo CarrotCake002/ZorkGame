@@ -57,29 +57,16 @@ Commands
 
 Notes
 - Commands that reference objects will print an explanatory message if the object is missing, the type is incorrect (e.g., trying to take a creature), or the required conjunction is invalid.
-- For exact behavior and validation logic, see `ZorkGame/World.cpp` (functions such as `handleAction`, `checkConjunction`, and the `handleCmd*Errors` helpers).
 
 Enjoy exploring!
 )help"
 
 #define INTRO R"intro(
 
-Zork is a small text-based adventure. Explore rooms, inspect and collect items, put items into containers, fight creatures with weapons, and move between locations.
+Zork is a small text-based adventure game. Explore rooms, inspect and collect items, fight creatures, and move between locations.
 
-Try commands such as:
-- `help` — show this help text with more details on how to use the instructions
-- `look` — inspect your current location
-- `inventory` or `i` — list carried items
-- `take <item>` — pick up an item
-- `take <item> from <container>` — take an item from a container
-- `put <item> in <container>` — put an item into a container
-- `drop <item>` — drop an item into the room
-- `walk <direction>` — move (e.g., `walk north`)
-- `attack <target>` — attack a creature without a weapon (unarmed)
-- `attack <target> with <weapon>` — attack a creature using a weapon
-- `quit` — exit the game
+To see the full list of available commands and detailed usage, type `help` at the game prompt.
 
-Commands are case-insensitive. Chain commands with `;` (example: `take key; walk north`).
 Enjoy exploring!
 )intro"
 

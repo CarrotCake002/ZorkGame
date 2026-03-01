@@ -11,7 +11,7 @@ World::World() {
 
 	// Creation of the starting room and its content
 	addEntity(new Room("Starting Room", "a small room with a door to the north"));
-	moveToRoom(getTarget("Starting Room"));
+	currentRoom = static_cast<Room*>(getTarget("Starting Room"));
 
     addEntity(new Creature("NPC", "a small goofy ennemy", 10, 1));
     addEntity(new Weapon("Rock", "a rock that deals damage with every hit", 1));
@@ -147,7 +147,7 @@ int World::handleCmdPutErrors(std::string target, Entity* eTarget, std::string c
 
 int World::handleCmdWalkErrors(Exit* exit) const {
     if (exit == nullptr) {
-        printDialogue("That's not a valid direction!\n");
+        printDialogue("You bumped yourself into an object. Pick a valid direction!\n");
         return 1;
     }
     return 0;
@@ -285,8 +285,25 @@ int World::cmdAttack(std::string target, std::string weapon) {
     player->attack(ennemy, static_cast<Weapon*>(eWeapon));
     if (!ennemy->isAlive()) {
 		ennemy->die(currentRoom);
+        return 0;
     }
+    ennemy->setAggro(true);
     return 0;
+}
+
+void World::ennemyAttack(void) {
+    auto entities = currentRoom->getContains();
+    Creature* ennemy = nullptr;
+
+    for (auto& entity : entities) {
+        if (entity->getType() == EntityType::CREATURE) {
+            ennemy = static_cast<Creature*>(entity);
+
+            if (ennemy->isAggro()) {
+                ennemy->attack(static_cast<Player*>(getTarget("Player")), ennemy->getWeapon());
+            }
+        }
+    }
 }
 
 int World::handleAction(std::string action, std::string target, std::string conjunction, std::string container) {
@@ -331,6 +348,9 @@ int World::handleAction(std::string action, std::string target, std::string conj
     else {
         printDialogue("Sorry, I did not understand your action.\n");
     }
+    if (action != "help" && action != "look" && action != "inventory" && action != "i") {
+        ennemyAttack();
+    }
     return 0;
 }
 
@@ -353,7 +373,6 @@ int World::parseCommands(void) {
         commands.erase(commands.begin());
         if (handleCommand(command) != 0)
 			return 1;
-        // add enemy attacking player if applicable
     }
     return 0;
 }
@@ -371,7 +390,7 @@ int World::splitCommands(std::string input) {
 int World::getInput(void) {
     std::string input;
 
-    std::cout << " > ";
+    std::cout << "\x1b[32m" << " > " << "\x1b[0m";
     std::getline(std::cin, input);
     if (splitCommands(input) != 0)
         return 1;

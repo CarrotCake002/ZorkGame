@@ -63,6 +63,8 @@ public:
 	int handleAction(std::string action, std::string target, std::string conjunction, std::string item);
 	Entity* getTarget(std::string target) const;
 
+	void ennemyAttack(void);
+
 	void addEntity(Entity* entity) { entities.push_back(entity); };
 
 private:
