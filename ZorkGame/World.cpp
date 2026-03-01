@@ -1,7 +1,8 @@
 #include "World.h"
 
 World::World() {
-    slowPrint("Welcome to Zork! The game is still in development, but feel free to explore the world and test out the commands! Type 'quit' to exit the game.\n");
+    printDialogue(ZORK_ASCII, 0);
+	printDialogue(INTRO, 0);
     std::cout << std::endl;
 
     addEntity(new Player("Player", "the player character", 20, 2, EntityType::PLAYER));
@@ -186,6 +187,10 @@ bool checkConjunction(std::string action, std::string conjunction) {
     return false;
 }
 
+void World::cmdHelp(void) const {
+    printDialogue(HELP, 0);
+}
+
 void World::cmdLook(void) const {
     printDialogue("You look around and see:\n");
     for (auto &entity : currentRoom->getContains()) {
@@ -293,6 +298,12 @@ int World::handleAction(std::string action, std::string target, std::string conj
     else if (action == "look" && target.empty()) {
         cmdLook();
     }
+    else if ((action == "inventory" || action == "i") && target.empty()) {
+        cmdInventory();
+    }
+    else if (action == "help" && target.empty()) {
+        cmdHelp();
+    }
     else if (action == "drop" && conjunction.empty()) {
         cmdDrop(target);
     }
@@ -303,9 +314,6 @@ int World::handleAction(std::string action, std::string target, std::string conj
         if (!checkConjunction(action, conjunction))
             return 0;
 		cmdTakeFromContainer(target, container);
-    }
-    else if ((action == "inventory" || action == "i") && target.empty()) {
-        cmdInventory();
     }
     else if (action == "put" && !conjunction.empty()) {
         if (!checkConjunction(action, conjunction))
@@ -345,6 +353,7 @@ int World::parseCommands(void) {
         commands.erase(commands.begin());
         if (handleCommand(command) != 0)
 			return 1;
+        // add enemy attacking player if applicable
     }
     return 0;
 }

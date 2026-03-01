@@ -7,6 +7,8 @@
 #include "Exit.h"
 #include "Weapon.h"
 
+#include "Constants.h"
+
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -29,6 +31,7 @@ public:
 	// DISPLAY COMMANDS
 	void cmdLook(void) const;
 	void cmdInventory(void) const;
+	void cmdHelp(void) const;
 
 	// ACTION COMMANDS ERROR HANDLERS
 	int handleCmdDropErrors(std::string target, Entity* eTarget) const;
