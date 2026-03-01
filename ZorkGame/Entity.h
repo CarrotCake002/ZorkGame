@@ -9,20 +9,21 @@
 
 enum class EntityType
 {
-	None,
-	Player,
-	Item,
-	Container,
-	Creature,
-	Room,
-	Exit
+	NONE,
+	PLAYER,
+	ITEM,
+	WEAPON,
+	CONTAINER,
+	CREATURE,
+	ROOM,
+	EXIT
 };
 
 class Entity
 {
 public:
 	Entity() = default;
-	Entity(std::string name, std::string description, EntityType type = EntityType::Item);
+	Entity(std::string name, std::string description, EntityType type = EntityType::ITEM);
 	virtual ~Entity() = default;
 
 	virtual void display(void);
@@ -39,7 +40,7 @@ public:
 	std::list<Entity*> getContains(void) const { return contains; };
 
 protected:
-	EntityType type = EntityType::Item;
+	EntityType type = EntityType::ITEM;
 	std::string name;
 	std::string description;
 	std::list<Entity*> contains;
