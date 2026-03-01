@@ -1,6 +1,9 @@
+#include <windows.h>
 #include "World.h"
 
 int main() {
+    SetConsoleOutputCP(CP_UTF8);
+
     int status = true;
     World world;
 

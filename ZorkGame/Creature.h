@@ -11,24 +11,31 @@ public:
 	~Creature() = default;
 
 	void display(void) override;
-	void printContains() const;
+	void printContains(void) const;
 
-	std::string getName() const override { return name; };
-	int getHealth() const { return health; };
-	int getAttackPower() const { return attackPower; };
+	std::string getName(void) const override { return name; };
+	int getHealth(void) const { return health; };
+	int getAttackPower(void) const { return attackPower; };
+	Weapon* getWeapon(void) const;
+	bool isAlive(void) const { return health > 0; };
+	bool isAggro(void) const { return aggro; };
 
+	void setAggro(bool aggro);
+
+	
 	void takeDamage(int damage);
-	bool isAlive() const;
 	int calcAttackPower(Weapon* weapon) const;
-	int attack(Creature* defender, Weapon* weapon);
+	int attack(Creature* defender, Weapon* weapon) const;
 	bool dropItem(Room* currentRoom, Entity *item);
 	void die(Room* currentRoom);
+
 
 protected:
 	int health;
 	int attackPower;
 	int armor;
 	double critChance = 0.05;
+	bool aggro = false;
 };
 
 using Player = Creature;
