@@ -1,13 +1,9 @@
 #include "World.h"
 
 World::World() {
-    printDialogue(ZORK_ASCII, 0);
-	printDialogue(INTRO, 0);
-    std::cout << std::endl;
-
     addEntity(new Player("Player", "the player character", 20, 2, EntityType::PLAYER));
     addEntity(new Weapon("Stick", "a stick to attack enemies with", 2));
-    getTarget("Player")->addItem(getTarget("Stick"));
+    getPlayer()->addItem(getTarget("Stick"));
 
 	// Creation of the starting room and its content
 	addEntity(new Room("Starting Room", "a small room with a door to the north"));
@@ -203,7 +199,7 @@ void World::cmdLook(void) const {
 }
 
 void World::cmdInventory(void) const {
-    Player* player = static_cast<Player*>(getTarget("Player"));
+    Player* player = getPlayer();
 
     if (player->getContains().size() < 1) {
         printDialogue("Your inventory is empty.\n");
@@ -215,7 +211,7 @@ void World::cmdInventory(void) const {
 }
 
 int World::cmdDrop(std::string target) {
-    Player* player = static_cast<Player*>(getTarget("Player"));
+    Player* player = getPlayer();
     Entity* entity = player->removeItem(target);
 
     if (handleCmdDropErrors(target, entity) != 0)
@@ -226,7 +222,7 @@ int World::cmdDrop(std::string target) {
 }
 
 int World::cmdTake(std::string target) {
-    Player* player = static_cast<Player*>(getTarget("Player"));
+    Player* player = getPlayer();
     Entity* entity = currentRoom->getItem(target);
 
     if (handleCmdTakeErrors(target, entity) != 0)
@@ -238,7 +234,7 @@ int World::cmdTake(std::string target) {
 }
 
 int World::cmdTakeFromContainer(std::string target, std::string container) {
-    Player* player = static_cast<Player*>(getTarget("Player"));
+    Player* player = getPlayer();
     Entity* entity = currentRoom->getItem(target);
     Entity* eContainer = currentRoom->getItem(container);
 
@@ -251,7 +247,7 @@ int World::cmdTakeFromContainer(std::string target, std::string container) {
 }
 
 int World::cmdPut(std::string target, std::string container) {
-    Player* player = static_cast<Player*>(getTarget("Player"));
+    Player* player = getPlayer();
     Entity* eTarget = player->getItem(target);
     Entity* eContainer = currentRoom->getItem(container);
 
@@ -275,7 +271,7 @@ int World::cmdWalk(std::string target) {
 }
 
 int World::cmdAttack(std::string target, std::string weapon) {
-    Player* player = static_cast<Player*>(getTarget("Player"));
+    Player* player = getPlayer();
     Entity* eTarget = currentRoom->getItem(target);
     Entity* eWeapon = player->getItem(weapon);
     Creature* ennemy = nullptr;
@@ -288,7 +284,8 @@ int World::cmdAttack(std::string target, std::string weapon) {
 		ennemy->die(currentRoom);
         return 0;
     }
-    ennemy->setAggro(true);
+    if (!ennemy->isAggro())
+        ennemy->setAggro(true);
     return 0;
 }
 
@@ -301,10 +298,19 @@ void World::ennemyAttack(void) {
             ennemy = static_cast<Creature*>(entity);
 
             if (ennemy->isAggro()) {
-                ennemy->attack(static_cast<Player*>(getTarget("Player")), ennemy->getWeapon());
+                ennemy->attack(getPlayer(), ennemy->getWeapon());
             }
         }
     }
+}
+
+void World::displayDeathScreen() const {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<size_t> dist(0, deathScreens.size() - 1);
+
+    printDialogue(deathScreens[dist(gen)] + "\n");
+    printDialogue("Use 'reset' to restart or 'quit' to close the game.\n");
 }
 
 int World::handleAction(std::string action, std::string target, std::string conjunction, std::string container) {
@@ -349,6 +355,9 @@ int World::handleAction(std::string action, std::string target, std::string conj
             return 1;
         cmdAttack(target, container);
 	}
+	else if (handleSecretCommands(toLower(action), toLower(target), toLower(conjunction), toLower(container)) == 0) {
+        return 1;
+    }
     else {
         printDialogue("Sorry, I did not understand your action.\n");
         return 1;
@@ -369,12 +378,14 @@ int World::parseCommands(void) {
     std::string command;
     int status = 0;
 
-    while (!quit && commands.size() > 0) {
+    while (commands.size() > 0 && !quit && getPlayer()->isAlive()) {
         command = commands.front();
         commands.erase(commands.begin());
 		status = handleCommand(command);
         if (status == 0)
             ennemyAttack();
+        if (!getPlayer()->isAlive())
+            displayDeathScreen();
     }
     return 0;
 }
@@ -392,7 +403,7 @@ int World::splitCommands(std::string input) {
 int World::getInput(void) {
     std::string input;
 
-    std::cout << "\x1b[32m" << " > " << "\x1b[0m";
+    std::cout << TEXT_COLOR_CYAN << " > " << TEXT_COLOR_RESET;
     std::getline(std::cin, input);
     if (splitCommands(input) != 0)
         return 1;
