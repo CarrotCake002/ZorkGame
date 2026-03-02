@@ -1,4 +1,5 @@
 #include "Creature.h"
+#include "Constants.h"
 
 Creature::Creature(std::string name, std::string description, int health, int attackPower, EntityType type)
 		: health(health), attackPower(attackPower) {
@@ -11,14 +12,20 @@ Creature::Creature(std::string name, std::string description, int health, int at
 void Creature::printContains() const {
 	slowPrint("\t");
 	for (auto& elem : contains) {
-		slowPrint(elem->getName() + "\t");
+		slowPrint(elem->getPrintableName() + "\t");
 	}
+}
+
+std::string Creature::getPrintableName(void) const {
+	if (this->type == EntityType::PLAYER)
+		return TEXT_COLOR_GREEN + getName() + TEXT_COLOR_RESET;
+	return TEXT_COLOR_RED + getName() + TEXT_COLOR_RESET;
 }
 
 void Creature::display() {
 	if (type == EntityType::PLAYER)
 		return;
-	slowPrint(" - A creature that goes by the mighty name of " + name + ".\nIt is described as " + description + ".\n");
+	slowPrint(" - A creature that goes by the mighty name of " + getPrintableName() + ".\nIt is described as " + description + ".\n");
 	if (contains.size() > 0) {
 		slowPrint("It also has in its inventory:\n");
 		printContains();
@@ -30,20 +37,14 @@ void Creature::display() {
 void Creature::takeDamage(int damage) {
 	int totalDamage = damage - armor;
 
-	if (totalDamage < 0) {
-		printDialogue("The " + name + "'s armor is too sturdy and absorbs all the damage.\n");
-		return;
-	}
+    if (totalDamage < 0) {
+        printDialogue("The " + getPrintableName() + "'s armor is too sturdy and absorbs all the damage.\n");
+        return;
+    }
 	health -= totalDamage;
 	if (health < 0)
 		health = 0;
-    // Make the damage message clear whether the player or a creature is taking damage
-    if (type == EntityType::PLAYER) {
-        printDialogue("You take " + std::to_string(totalDamage) + " damage and have " + std::to_string(health) + " health remaining.\n");
-    }
-    else {
-        printDialogue(name + " takes " + std::to_string(totalDamage) + " damage and has " + std::to_string(health) + " health remaining.\n");
-    }
+    printDialogue(getPrintableName() + " takes " + TEXT_COLOR_RED + std::to_string(totalDamage) + TEXT_COLOR_RESET + " damage and has " + TEXT_COLOR_GREEN + std::to_string(health) + TEXT_COLOR_RESET + " health remaining.\n");
 }
 
 int Creature::calcAttackPower(Weapon *weapon) const {
@@ -57,13 +58,10 @@ int Creature::calcAttackPower(Weapon *weapon) const {
     if (rollCrit(totalCritChance)) {
         totalAttackPower *= 2;
 
-        std::string attackerName = (type == EntityType::PLAYER) ? "You" : getName();
-        std::string possessive = (type == EntityType::PLAYER) ? "Your" : attackerName + "'s";
-        printDialogue(attackerName + " lands a critical hit! " + possessive + " attack power is doubled to " + std::to_string(totalAttackPower) + "!\n");
+        printDialogue(getPrintableName() + " lands a " + TEXT_COLOR_RED + "critical hit!" + TEXT_COLOR_RESET + " His attack power is doubled to " + TEXT_COLOR_RED + std::to_string(totalAttackPower) + TEXT_COLOR_RESET + "!\n");
     }
     else {
-        std::string attackerName = (type == EntityType::PLAYER) ? "You" : getName();
-        printDialogue(attackerName + " attacks for a total of " + std::to_string(totalAttackPower) + " damage.\n");
+        printDialogue(getPrintableName() + " attacks for a total of " + TEXT_COLOR_RED + std::to_string(totalAttackPower) + TEXT_COLOR_RESET + " damage.\n");
     }
 	return totalAttackPower;
 }
@@ -92,12 +90,12 @@ void Creature::die(Room* currentRoom) {
 		it = contains.erase(it);
 	}
 	currentRoom->removeItem(name);
-	printDialogue("The " + getName() + " has been defeated and dropped its items on the ground.\n");
+	printDialogue("The " + getPrintableName() + " has been defeated and dropped its items on the ground.\n");
 }
 
 void Creature::setAggro(bool aggro) {
 	this->aggro = aggro;
-	printDialogue("The " + getName() + " is now targetting you!");
+	printDialogue("The " + getPrintableName() + " is now targetting you!");
 }
 
 Weapon* Creature::getWeapon() const {
