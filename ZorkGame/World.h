@@ -33,6 +33,9 @@ public:
 	void cmdInventory(void) const;
 	void cmdHelp(void) const;
 
+	// OTHER DISPLAY FUNCTIONS
+	void displayDeathScreen(void) const;
+
 	// ACTION COMMANDS ERROR HANDLERS
 	int handleCmdDropErrors(std::string target, Entity* eTarget) const;
 	int handleCmdTakeErrors(std::string target, Entity* eTarget) const;
@@ -49,9 +52,12 @@ public:
 	int cmdWalk(std::string target);
 	int cmdAttack(std::string target, std::string weapon);
 
+	// SECRET COMMANDS
+	int handleSecretCommands(std::string action, std::string target, std::string conjunction, std::string container);
+	int cmdSlashKill(void);
+
 	// MOVEMENT FUNCTIONS
 	int moveToRoom(Entity* room);
-
 
 	bool isRunning(void) const { return !quit; };
 
@@ -62,6 +68,7 @@ public:
 
 	int handleAction(std::string action, std::string target, std::string conjunction, std::string item);
 	Entity* getTarget(std::string target) const;
+	Player* getPlayer(void) const { return static_cast<Player*>(getTarget("Player")); };
 
 	void ennemyAttack(void);
 

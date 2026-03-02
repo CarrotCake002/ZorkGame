@@ -1,5 +1,6 @@
 #include "Exit.h"
 #include "Room.h"
+#include "Constants.h"
 
 Exit::Exit(std::string name, Direction dir, Room* source, Room* destination)
 	: Entity(name, "an exit to another room", EntityType::EXIT), direction(dir), source(source), destination(destination) {
@@ -7,8 +8,12 @@ Exit::Exit(std::string name, Direction dir, Room* source, Room* destination)
 }
 
 void Exit::display() {
-	slowPrint(" - An exit to the " + getStrDirection() + " which leads to " + destination->getName() + ".\n");
+	slowPrint(" - An exit to the " + getPrintableDirection() + " which leads to " + destination->getName() + ".\n");
 	std::cout << std::endl;
+}
+
+std::string Exit::getPrintableDirection() const {
+	return TEXT_COLOR_CYAN + getStrDirection() + TEXT_COLOR_RESET;
 }
 
 std::string Exit::getStrDirection() const {

@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "Constants.h"
 
 Entity::Entity(std::string name, std::string description, EntityType type) : name(name), description(description), type(type) {
 
@@ -7,18 +8,24 @@ Entity::Entity(std::string name, std::string description, EntityType type) : nam
 void Entity::printContains() const {
 	slowPrint("\t");
 	for (auto& elem : contains) {
-		slowPrint(elem->getName() + "\t");
+		slowPrint(elem->getPrintableName() + "\t");
 	}
 }
 
 void Entity::display() {
-	slowPrint(" - A " + name + " which is described as " + description + ".\n");
+	std::string text_color = (type == EntityType::CONTAINER) ? TEXT_COLOR_BRIGHT_YELLOW : TEXT_COLOR_YELLOW;
+
+	slowPrint(" - A " + text_color + name + TEXT_COLOR_RESET + " which is described as " + description + ".\n");
 	if (contains.size() > 0) {
 		slowPrint("It also contains:\n");
 		printContains();
 		slowPrint("\n");
 	}
 	std::cout << std::endl;
+}
+
+std::string Entity::getPrintableName(void) const {
+	return TEXT_COLOR_YELLOW + getName() + TEXT_COLOR_RESET;
 }
 
 void Entity::addItem(Entity* item) {

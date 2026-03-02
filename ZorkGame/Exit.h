@@ -22,6 +22,7 @@ public:
 	~Exit() = default;
 
 	void display(void) override;
+	std::string getPrintableDirection(void) const;
 
 	Direction getDirection(void) const { return direction; };
 	Room* getSource(void) const { return source; };

@@ -12,6 +12,7 @@ public:
 
 	void display(void) override;
 	void printContains(void) const;
+	std::string getPrintableName(void) const override;
 
 	std::string getName(void) const override { return name; };
 	int getHealth(void) const { return health; };
@@ -21,6 +22,7 @@ public:
 	bool isAggro(void) const { return aggro; };
 
 	void setAggro(bool aggro);
+	void setHealth(int health) { this->health = health; };
 
 	
 	void takeDamage(int damage);

@@ -28,6 +28,7 @@ public:
 
 	virtual void display(void);
 	virtual void printContains(void) const;
+	virtual std::string getPrintableName(void) const;
 
 	virtual void addItem(Entity* item);
 	virtual bool hasItem(std::string name) const;

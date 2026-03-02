@@ -133,6 +133,7 @@
     <ClCompile Include="Exit.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="secretCommands.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="World.cpp" />
