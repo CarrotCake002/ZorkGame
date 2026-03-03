@@ -65,6 +65,7 @@ public:
 	int splitCommands(std::string input);
 	int parseCommands(void);
 	int handleCommand(std::string command);
+	bool checkConjunction(std::string action, std::string conjunction) const;
 
 	int handleAction(std::string action, std::string target, std::string conjunction, std::string item);
 	Entity* getTarget(std::string target) const;

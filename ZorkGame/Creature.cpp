@@ -25,12 +25,12 @@ std::string Creature::getPrintableName(void) const {
 void Creature::display() {
 	if (type == EntityType::PLAYER)
 		return;
-	slowPrint(" - A creature that goes by the mighty name of " + getPrintableName() + ".\nIt is described as " + description + ".\n");
-	if (contains.size() > 0) {
+	slowPrint(" - A dangerous " + getPrintableName() + ".\nIt is described as " + description + ".\n");
+	/*if (contains.size() > 0) {
 		slowPrint("It also has in its inventory:\n");
 		printContains();
 		std::cout << "\n";
-	}
+	}*/
 	std::cout << std::endl;
 }
 

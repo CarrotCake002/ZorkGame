@@ -1,42 +1,71 @@
 #include "World.h"
 
 World::World() {
-    addEntity(new Player("Player", "the player character", 20, 2, EntityType::PLAYER));
-    addEntity(new Weapon("Stick", "a stick to attack enemies with", 2));
-    getPlayer()->addItem(getTarget("Stick"));
+    // Creation of the Player
+    addEntity(new Player("Player", "the player character", 15, 2, EntityType::PLAYER));
 
-	// Creation of the starting room and its content
-	addEntity(new Room("Starting Room", "a small room with a door to the north"));
-	currentRoom = static_cast<Room*>(getTarget("Starting Room"));
+	// Creation of the House and its contents
+	addEntity(new Room("House", "a simple house for a simple person."));
+	currentRoom = static_cast<Room*>(getTarget("House"));
 
-    addEntity(new Creature("NPC", "a small goofy ennemy", 10, 1));
-    addEntity(new Weapon("Rock", "a rock that deals damage with every hit", 1));
-	addEntity(new Entity("Coin", "a shiny gold coin that looks valuable"));
-	addEntity(new Entity("Key", "a small key that might open a door"));
-    getTarget("NPC")->addItem(getTarget("Rock"));
-	getTarget("NPC")->addItem(getTarget("Coin"));
-	getTarget("NPC")->addItem(getTarget("Key"));
-	getTarget("Starting Room")->addItem(getTarget("NPC"));
+    //  Creation of a Chest in the house with some items
+    addEntity(new Entity("Chest", "an old chest that can contain a few items", EntityType::CONTAINER));
+    addEntity(new Entity("Shirt", "a dirty shirt for handy labor"));
+    addEntity(new Entity("Pants", "a pair of rugs some dare too call pants"));
+    addEntity(new Weapon("Rock", "a rock perfect to smash bugs", 1, 0.05f));
+    getTarget("Chest")->addItem(getTarget("Shirt"));
+    getTarget("Chest")->addItem(getTarget("Pants"));
+    getTarget("Chest")->addItem(getTarget("Rock"));
+    getTarget("House")->addItem(getTarget("Chest"));
 
-    addEntity(new Entity("Bag", "a small bag that can contain a few items", EntityType::CONTAINER));
-    addEntity(new Entity("Hat", "a cool hat for daring fashion enjoyers"));
-    addEntity(new Entity("Shirt", "an elegant shirt for formal events"));
-    addEntity(new Entity("Pants", "nice pants that would pair perfectly with a shirt"));
-    getTarget("Bag")->addItem(getTarget("Hat"));
-    getTarget("Bag")->addItem(getTarget("Shirt"));
-    getTarget("Bag")->addItem(getTarget("Pants"));
-    getTarget("Starting Room")->addItem(getTarget("Bag"));
+    // Creation of a key to the backyard and put it in the house chest
+    addEntity(new Key("KeyToTheBackyard", "a key to the Backyard", 1));
+    getTarget("Chest")->addItem(getTarget("KeyToTheBackyard"));
 
-	// Creation of the north room and its content
-	addEntity(new Room("North Room", "a room to the north of the starting room"));
-	addEntity(new Creature("Guard", "a strong guard that looks like it doesn't want you to enter the north room", 20, 5));
-	getTarget("North Room")->addItem(getTarget("Guard"));
 
-	// Creation of the exit between the starting room and the north room
-	addEntity(new Exit("StartToNorth", Direction::NORTH, static_cast<Room*>(getTarget("Starting Room")), static_cast<Room*>(getTarget("North Room"))));
-	getTarget("Starting Room")->addItem(getTarget("StartToNorth"));
-	addEntity(new Exit("NorthToStart", Direction::SOUTH, static_cast<Room*>(getTarget("North Room")), static_cast<Room*>(getTarget("Starting Room"))));
-	getTarget("North Room")->addItem(getTarget("NorthToStart"));
+
+	// Creation of the Backyard and its content
+	addEntity(new Room("Backyard", "the backyard to your house. You have heard creatures festering from time to time..."));
+	addEntity(new Creature("Beetle", "a large beetle. It doesn't look aggressive, but who knows what you could find inside it...", 5, 1));
+	getTarget("Backyard")->addItem(getTarget("Beetle"));
+
+    // Creation of the exit between the backyard and the House
+    addEntity(new Exit("HouseToBackyard", Direction::NORTH, static_cast<Room*>(getTarget("House")), static_cast<Room*>(getTarget("Backyard")), false, 1));
+    getTarget("House")->addItem(getTarget("HouseToBackyard"));
+	addEntity(new Exit("BackyardToHouse", Direction::SOUTH, static_cast<Room*>(getTarget("Backyard")), static_cast<Room*>(getTarget("House"))));
+	getTarget("Backyard")->addItem(getTarget("BackyardToHouse"));
+
+    // Creation of the key from the house to the frontyard
+    addEntity(new Key("KeyToTheHouse", "a key to the front door of your House", 2));
+    getTarget("Beetle")->addItem(getTarget("KeyToTheHouse"));
+    
+
+
+    // Creation of the Frontyard room south of the House
+    addEntity(new Room("Frontyard", "the front of to house"));
+    addEntity(new Entity("Hat", "a burnt hat to avoid sunburn."));
+    getTarget("Frontyard")->addItem(getTarget("Hat"));
+
+    // Creation of the exits between house and frontyard
+    addEntity(new Exit("HouseToFrontyard", Direction::SOUTH, static_cast<Room*>(getTarget("House")), static_cast<Room*>(getTarget("Frontyard")), false, 2));
+    getTarget("House")->addItem(getTarget("HouseToFrontyard"));
+    addEntity(new Exit("FrontyardToHouse", Direction::NORTH, static_cast<Room*>(getTarget("Frontyard")), static_cast<Room*>(getTarget("House"))));
+    getTarget("Frontyard")->addItem(getTarget("FrontyardToHouse"));
+    
+
+    // Creation of the Woods
+    addEntity(new Room("Woods", "a forest with short but dense trees."));
+    addEntity(new Creature("Dragonfly", " the largest you've ever seen. For some reason, every insect seems to be growing in size.", 10, 2));
+    getTarget("Woods")->addItem(getTarget("Dragonfly"));
+
+    addEntity(new Weapon("Leg", "a large dragonfly leg that can be used to attack.", 2, 0.1f));
+    getTarget("Dragonfly")->addItem(getTarget("Leg"));
+
+    // Creation of the exits between Frontyard and Woods
+    addEntity(new Exit("FrontyardToWoods", Direction::SOUTH, static_cast<Room*>(getTarget("Frontyard")), static_cast<Room*>(getTarget("Woods"))));
+    getTarget("Frontyard")->addItem(getTarget("FrontyardToWoods"));
+    addEntity(new Exit("WoodsToFrontyard", Direction::NORTH, static_cast<Room*>(getTarget("Woods")), static_cast<Room*>(getTarget("Frontyard"))));
+    getTarget("Woods")->addItem(getTarget("WoodsToFrontyard"));
 }
 
 World::~World() {
@@ -90,7 +119,7 @@ int World::handleCmdTakeErrors(std::string target, Entity* eTarget) const {
         printDialogue("You can't take a creature! You can only take items.\n");
         return 1;
     }
-    else if (eTarget->getType() != EntityType::ITEM && eTarget->getType() != EntityType::WEAPON){
+    else if (eTarget->getType() != EntityType::ITEM && eTarget->getType() != EntityType::WEAPON && eTarget->getType() != EntityType::KEY){
         printDialogue("You can't take that... You can only take items!\n");
         return 1;
     }
@@ -101,6 +130,10 @@ int World::handleCmdTakeErrors(std::string target, Entity* eTarget) const {
 int World::handleCmdTakeFromContainerErrors(std::string target, Entity* eTarget, std::string container, Entity* eContainer) const {
     if (eContainer == nullptr) {
         printDialogue("There is no " + container + " here.\n");
+        return 1;
+    }
+    if (eTarget == nullptr) {
+        printDialogue("There is no " + target + "in the " + TEXT_COLOR_YELLOW + container + TEXT_COLOR_RESET + ".\n");
         return 1;
     }
     if (eContainer->getType() == EntityType::CREATURE) {
@@ -170,7 +203,7 @@ int World::handleAttack(Entity* target, Entity* eWeapon, std::string weapon) con
     return 0;
 }
 
-bool checkConjunction(std::string action, std::string conjunction) {
+bool World::checkConjunction(std::string action, std::string conjunction) const {
     if (action == "take" && conjunction == "from") {
         return true;
     }
@@ -235,12 +268,14 @@ int World::cmdTake(std::string target) {
 
 int World::cmdTakeFromContainer(std::string target, std::string container) {
     Player* player = getPlayer();
-    Entity* entity = currentRoom->getItem(target);
     Entity* eContainer = currentRoom->getItem(container);
+    Entity* entity = nullptr;
 
-    if (handleCmdTakeFromContainerErrors(target, entity, container, eContainer) != 0)
+    if (eContainer != nullptr)
+        entity = eContainer->getItem(target);
+    if (handleCmdTakeFromContainerErrors(target, entity, container, eContainer) != 0 || eContainer == nullptr || entity == nullptr)
 		return 1;
-    entity = eContainer->removeItem(target);
+    eContainer->removeItem(target);
     player->addItem(entity);
     printDialogue("You take the " + entity->getName() + " from the " + eContainer->getName() + ".\n");
     return 0;
@@ -265,8 +300,12 @@ int World::cmdWalk(std::string target) {
 
     if (handleCmdWalkErrors(exit) != 0)
         return 1;
+    if (exit->isLocked() && !exit->openDoor(getPlayer()->getContains())) {
+        return 1;
+    }
 	currentRoom = exit->getDestination();
-	printDialogue("You walk " + target + " and enter the " + currentRoom->getName() + ".\n");
+	printDialogue("You walk " + target + " and enter the " + TEXT_COLOR_CYAN + currentRoom->getName() + TEXT_COLOR_RESET + ".\n");
+
     return 0;
 }
 
