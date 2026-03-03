@@ -16,6 +16,7 @@ enum class EntityType
 	CONTAINER,
 	CREATURE,
 	ROOM,
+	KEY,
 	EXIT
 };
 

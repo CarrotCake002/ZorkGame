@@ -42,6 +42,7 @@ int runGame() {
 int main() {
     bool reset = false;
 
+    // Accept character for the banned display
     SetConsoleOutputCP(CP_UTF8);
 
     printDialogue(ZORK_ASCII, 0);

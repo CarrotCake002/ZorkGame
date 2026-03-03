@@ -152,6 +152,7 @@ inline const std::string TEXT_COLOR_BLUE = FG_BLUE;
 inline const std::string TEXT_COLOR_YELLOW = FG_YELLOW;
 inline const std::string TEXT_COLOR_BRIGHT_YELLOW = FG_BRIGHT_YELLOW;
 inline const std::string TEXT_COLOR_CYAN = FG_CYAN;
+inline const std::string TEXT_COLOR_MAGENTA = FG_MAGENTA;
 
 
 // DEATH DIALOGUE LINES

@@ -131,6 +131,7 @@
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Exit.cpp" />
+    <ClCompile Include="Key.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="secretCommands.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Exit.h" />
+    <ClInclude Include="Key.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Weapon.h" />
