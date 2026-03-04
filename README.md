@@ -4,7 +4,7 @@ A text-based adventure game written in C++ inspired by the classic Zork series. 
 
 **Authors:** CarrotCake002
 
-**Repository:** [https://github.com/your-username/your-repo](https://github.com/CarrotCake002/ZorkGame)
+**Repository:** [CarrotCake002/ZorkGame](https://github.com/CarrotCake002/ZorkGame)
 
 **License:** MIT
 
