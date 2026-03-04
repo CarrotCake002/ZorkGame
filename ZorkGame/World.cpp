@@ -1,71 +1,7 @@
 #include "World.h"
 
 World::World() {
-    // Creation of the Player
-    addEntity(new Player("Player", "the player character", 15, 2, EntityType::PLAYER));
-
-	// Creation of the House and its contents
-	addEntity(new Room("House", "a simple house for a simple person."));
-	currentRoom = static_cast<Room*>(getTarget("House"));
-
-    //  Creation of a Chest in the house with some items
-    addEntity(new Entity("Chest", "an old chest that can contain a few items", EntityType::CONTAINER));
-    addEntity(new Entity("Shirt", "a dirty shirt for handy labor"));
-    addEntity(new Entity("Pants", "a pair of rugs some dare too call pants"));
-    addEntity(new Weapon("Rock", "a rock perfect to smash bugs", 1, 0.05f));
-    getTarget("Chest")->addItem(getTarget("Shirt"));
-    getTarget("Chest")->addItem(getTarget("Pants"));
-    getTarget("Chest")->addItem(getTarget("Rock"));
-    getTarget("House")->addItem(getTarget("Chest"));
-
-    // Creation of a key to the backyard and put it in the house chest
-    addEntity(new Key("KeyToTheBackyard", "a key to the Backyard", 1));
-    getTarget("Chest")->addItem(getTarget("KeyToTheBackyard"));
-
-
-
-	// Creation of the Backyard and its content
-	addEntity(new Room("Backyard", "the backyard to your house. You have heard creatures festering from time to time..."));
-	addEntity(new Creature("Beetle", "a large beetle. It doesn't look aggressive, but who knows what you could find inside it...", 5, 1));
-	getTarget("Backyard")->addItem(getTarget("Beetle"));
-
-    // Creation of the exit between the backyard and the House
-    addEntity(new Exit("HouseToBackyard", Direction::NORTH, static_cast<Room*>(getTarget("House")), static_cast<Room*>(getTarget("Backyard")), false, 1));
-    getTarget("House")->addItem(getTarget("HouseToBackyard"));
-	addEntity(new Exit("BackyardToHouse", Direction::SOUTH, static_cast<Room*>(getTarget("Backyard")), static_cast<Room*>(getTarget("House"))));
-	getTarget("Backyard")->addItem(getTarget("BackyardToHouse"));
-
-    // Creation of the key from the house to the frontyard
-    addEntity(new Key("KeyToTheHouse", "a key to the front door of your House", 2));
-    getTarget("Beetle")->addItem(getTarget("KeyToTheHouse"));
-    
-
-
-    // Creation of the Frontyard room south of the House
-    addEntity(new Room("Frontyard", "the front of to house"));
-    addEntity(new Entity("Hat", "a burnt hat to avoid sunburn."));
-    getTarget("Frontyard")->addItem(getTarget("Hat"));
-
-    // Creation of the exits between house and frontyard
-    addEntity(new Exit("HouseToFrontyard", Direction::SOUTH, static_cast<Room*>(getTarget("House")), static_cast<Room*>(getTarget("Frontyard")), false, 2));
-    getTarget("House")->addItem(getTarget("HouseToFrontyard"));
-    addEntity(new Exit("FrontyardToHouse", Direction::NORTH, static_cast<Room*>(getTarget("Frontyard")), static_cast<Room*>(getTarget("House"))));
-    getTarget("Frontyard")->addItem(getTarget("FrontyardToHouse"));
-    
-
-    // Creation of the Woods
-    addEntity(new Room("Woods", "a forest with short but dense trees."));
-    addEntity(new Creature("Dragonfly", " the largest you've ever seen. For some reason, every insect seems to be growing in size.", 10, 2));
-    getTarget("Woods")->addItem(getTarget("Dragonfly"));
-
-    addEntity(new Weapon("Leg", "a large dragonfly leg that can be used to attack.", 2, 0.1f));
-    getTarget("Dragonfly")->addItem(getTarget("Leg"));
-
-    // Creation of the exits between Frontyard and Woods
-    addEntity(new Exit("FrontyardToWoods", Direction::SOUTH, static_cast<Room*>(getTarget("Frontyard")), static_cast<Room*>(getTarget("Woods"))));
-    getTarget("Frontyard")->addItem(getTarget("FrontyardToWoods"));
-    addEntity(new Exit("WoodsToFrontyard", Direction::NORTH, static_cast<Room*>(getTarget("Woods")), static_cast<Room*>(getTarget("Frontyard"))));
-    getTarget("Woods")->addItem(getTarget("WoodsToFrontyard"));
+    initialize();
 }
 
 World::~World() {
@@ -224,10 +160,7 @@ void World::cmdHelp(void) const {
 void World::cmdLook(void) const {
     printDialogue("You look around and see:\n");
     for (auto &entity : currentRoom->getContains()) {
-        if (entity->getType() == EntityType::EXIT)
-			static_cast<Exit*>(entity)->display();
-        else
-            entity->display();
+        entity->display();
     }
 }
 
@@ -241,6 +174,15 @@ void World::cmdInventory(void) const {
     printDialogue("You check your inventory and find:");
     player->printContains();
     printDialogue("\n");
+}
+
+void World::cmdStatus(void) const {
+    getPlayer()->displayStatus();
+    for (auto& entity : currentRoom->getContains()) {
+        if (entity->getType() == EntityType::CREATURE) {
+            static_cast<Creature*>(entity)->displayStatus();
+        }
+    }
 }
 
 int World::cmdDrop(std::string target) {
@@ -309,6 +251,39 @@ int World::cmdWalk(std::string target) {
     return 0;
 }
 
+bool World::checkAllEnnemiesDead() {
+    std::list<Entity*> contains = currentRoom->getContains();
+    
+    for (auto& entity : contains) {
+        if (entity->getType() == EntityType::CREATURE)
+            return false;
+    }
+    return true;
+}
+
+void World::healPlayer() {
+    Player* player = getPlayer();
+
+    player->setMaxHealth(player->getMaxHealth() + 5);
+    player->setHealth(player->getMaxHealth());
+    printDialogue("The fight invigorates you. You heal and gain increased stats.");
+    player->displayStatus();
+}
+
+void World::aggroEnnemies() {
+    std::list<Entity*> contains = currentRoom->getContains();
+    Creature* ennemy = nullptr;
+
+    for (auto& entity : contains) {
+        if (entity->getType() != EntityType::CREATURE)
+            continue;
+        ennemy = static_cast<Creature*>(entity);
+        if (!ennemy->isAggro())
+            ennemy->setAggro(true);
+    }
+    std::cout << std::endl;
+}
+
 int World::cmdAttack(std::string target, std::string weapon) {
     Player* player = getPlayer();
     Entity* eTarget = currentRoom->getItem(target);
@@ -321,10 +296,11 @@ int World::cmdAttack(std::string target, std::string weapon) {
     player->attack(ennemy, static_cast<Weapon*>(eWeapon));
     if (!ennemy->isAlive()) {
 		ennemy->die(currentRoom);
+        if (checkAllEnnemiesDead())
+            healPlayer();
         return 0;
     }
-    if (!ennemy->isAggro())
-        ennemy->setAggro(true);
+    aggroEnnemies();
     return 0;
 }
 
@@ -366,6 +342,10 @@ int World::handleAction(std::string action, std::string target, std::string conj
         cmdInventory();
         return 1;
     }
+    else if (action == "status" && target.empty()) {
+        cmdStatus();
+        return 1;
+    }
     else if (action == "help" && target.empty()) {
         cmdHelp();
         return 1;
@@ -392,7 +372,8 @@ int World::handleAction(std::string action, std::string target, std::string conj
     else if (action == "attack") {
         if (!checkConjunction(action, conjunction))
             return 1;
-        cmdAttack(target, container);
+        if (cmdAttack(target, container) != 0)
+            return 1;
 	}
 	else if (handleSecretCommands(toLower(action), toLower(target), toLower(conjunction), toLower(container)) == 0) {
         return 1;
