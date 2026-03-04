@@ -55,7 +55,7 @@ int World::handleCmdTakeErrors(std::string target, Entity* eTarget) const {
         printDialogue("You can't take a creature! You can only take items.\n");
         return 1;
     }
-    else if (eTarget->getType() != EntityType::ITEM && eTarget->getType() != EntityType::WEAPON && eTarget->getType() != EntityType::KEY){
+    else if (eTarget->getType() != EntityType::ITEM && eTarget->getType() != EntityType::WEAPON && eTarget->getType() != EntityType::KEY && eTarget->getType() != EntityType::NOTE){
         printDialogue("You can't take that... You can only take items!\n");
         return 1;
     }
@@ -258,6 +258,19 @@ bool World::checkAllEnnemiesDead() {
         if (entity->getType() == EntityType::CREATURE)
             return false;
     }
+    if (currentRoom->getName() == "ThroneRoom") {
+        printDialogue({
+            { "\n\n\n\n\n", 1000 },
+            { "The Dark Lord is dead.", 50 }, { "", 2000 }, { "\n", 0},
+            { "The castle is yours", 50 }, { "", 2000 },
+            { ", the kingdom is yours", 50 }, { "", 3000 },
+            { ", and yet the halls remain cold and empty.", 50 }, { "", 3000 }, { "\n\n", 0},
+            { "You sit on the throne.", 70}, { "", 3000 }, { "\n\n", 0},
+            { "Nobody comes.", 100 }, { "", 3000 }, { "\n\n", 0},
+            { "Perhaps that was always the point.", 130 }, { "", 5000 },
+            { "\n\n\n\n\n", 1000}, { "", 3000 }
+        });
+    }
     return true;
 }
 
@@ -278,7 +291,7 @@ void World::aggroEnnemies() {
         if (entity->getType() != EntityType::CREATURE)
             continue;
         ennemy = static_cast<Creature*>(entity);
-        if (!ennemy->isAggro())
+        if (!ennemy->isAggro() && ennemy->isAlive())
             ennemy->setAggro(true);
     }
     std::cout << std::endl;
@@ -294,13 +307,13 @@ int World::cmdAttack(std::string target, std::string weapon) {
         return 1;
 	ennemy = static_cast<Creature*>(eTarget);
     player->attack(ennemy, static_cast<Weapon*>(eWeapon));
+    aggroEnnemies();
     if (!ennemy->isAlive()) {
 		ennemy->die(currentRoom);
         if (checkAllEnnemiesDead())
             healPlayer();
         return 0;
     }
-    aggroEnnemies();
     return 0;
 }
 

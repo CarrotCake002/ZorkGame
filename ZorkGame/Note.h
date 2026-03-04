@@ -10,7 +10,7 @@ public:
 	~Note() {};
 
 	void display(void) override {
-		slowPrint(" - A " + TEXT_COLOR_YELLOW + "Note" + TEXT_COLOR_RESET + " that says:\n" + description + "\n");
+		printDialogue(" - A " + TEXT_COLOR_YELLOW + "Note" + TEXT_COLOR_RESET + " that says:\n" + description + "\n");
 	}
 
 };
