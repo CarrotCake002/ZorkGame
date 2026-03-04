@@ -2,9 +2,9 @@
 
 A text-based adventure game written in C++ inspired by the classic Zork series. Explore rooms, fight creatures, collect items and weapons, and make your way through a world that grows increasingly dangerous the further you venture from home.
 
-**Authors:** [Your Name]
+**Authors:** CarrotCake002
 
-**Repository:** [https://github.com/your-username/your-repo](https://github.com/your-username/your-repo)
+**Repository:** [https://github.com/your-username/your-repo](https://github.com/CarrotCake002/ZorkGame)
 
 **License:** MIT
 
@@ -12,7 +12,7 @@ A text-based adventure game written in C++ inspired by the classic Zork series. 
 
 ## How to Build and Run
 
-A prebuilt executable can be downloaded from the **Releases** section of the repository. The project is developed and tested with **Visual Studio 2022** — opening the solution and building from there is the recommended approach. Running it any other way is at your own risk.
+A prebuilt executable can be downloaded from the **Releases** section of the repository. The project is developed and tested with **Visual Studio 2026** — opening the solution and building from there is the recommended approach. Running it any other way is at your own risk.
 
 ---
 
