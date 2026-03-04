@@ -1,104 +1,115 @@
-# ZorkGame
+# Zork
 
-ZorkGame is a simple text-based adventure game implemented in C++ (Zork-style). Play by typing commands and exploring the world.
+A text-based adventure game written in C++ inspired by the classic Zork series. Explore rooms, fight creatures, collect items and weapons, and make your way through a world that grows increasingly dangerous the further you venture from home.
 
-Repository
-- GitHub: https://github.com/CarrotCake002/ZorkGame
-- License: https://github.com/CarrotCake002/ZorkGame/blob/master/LICENSE
+**Authors:** [Your Name]
 
-Download
-- Clone the repository:
+**Repository:** [https://github.com/your-username/your-repo](https://github.com/your-username/your-repo)
 
-  ```bash
-  git clone https://github.com/CarrotCake002/ZorkGame.git
-  cd ZorkGame
-  ```
+**License:** MIT
 
-- Or download the ZIP from the GitHub repository page and extract it locally.
+---
 
-Build and run
-- Recommended (Windows / Visual Studio):
-  - Open the solution or project in Visual Studio (the `ZorkGame` project or solution file if present).
-  - Build the project (Release or Debug) and run from the IDE.
+## How to Build and Run
 
-- Using g++ (simple single-file example; adjust source list as needed):
-  ```bash
-  g++ -std=c++17 ZorkGame/main.cpp ZorkGame/World.cpp ZorkGame/Creature.cpp -o ZorkGame
-  ./ZorkGame
-  ```
+A prebuilt executable can be downloaded from the **Releases** section of the repository. The project is developed and tested with **Visual Studio 2022** — opening the solution and building from there is the recommended approach. Running it any other way is at your own risk.
 
-Authors and contributors
-- Primary repository owner: `CarrotCake002` (see GitHub for full contributor list)
-- Contributions are welcome — open a pull request on the GitHub repository.
+---
 
-How to play
+## How to Play
 
-- Input and parsing notes
-  - Commands are typed at the prompt and executed when you press Enter.
-  - Input is parsed into up to four space-separated tokens: `action`, `target`, `conjunction`, `container` (or `weapon`).
-  - Commands are case-insensitive (the game converts input to lowercase before processing).
-  - You can chain multiple commands on one line using `;` (semicolon). Example: `take coin; inventory`.
-  - Multi-word names are currently not supported by the parser: names must be a single word (for example `key`, `rock`, `bag`).
+Commands are typed at the prompt (`>`) and are case-insensitive. You can chain multiple commands on one line using `;`.
 
-- Supported actions and syntax (implemented in `ZorkGame/World.cpp`)
-  - `look`
-    - Description: Show the contents of the current room (items, creatures, exits).
-    - Example: `look`
+### Available Commands
 
-  - `inventory` or `i`
-    - Description: Show items currently carried by the player.
-    - Example: `inventory`
+| Command | Description |
+|---|---|
+| `look` | Show the contents of the current room |
+| `inventory` / `i` | Show items in your inventory |
+| `status` | Show your health and the health of creatures in the room |
+| `take <item>` | Pick up an item from the room |
+| `take <item> from <container>` | Take an item from a container |
+| `drop <item>` | Drop an item from your inventory |
+| `put <item> in <container>` | Place an item into a container |
+| `walk <direction>` | Move in a direction (`north`, `south`, `east`, `west`, `up`, `down`) |
+| `attack <creature>` | Attack a creature unarmed |
+| `attack <creature> with <weapon>` | Attack a creature with a weapon from your inventory |
+| `help` | Show the help text |
+| `quit` | Exit the game |
+| `reset` | Restart the game after dying |
 
-  - `take <item>`
-    - Description: Pick up an item that is present in the current room.
-    - Example: `take coin`
-    - Notes: Cannot take creatures or containers as a whole. The game will refuse non-item types.
+### Combat
 
-  - `take <item> from <container>`
-    - Description: Take an item out of a container that is present in the current room.
-    - Example: `take hat from bag`
-    - Supported conjunction: `from` (required in this form). The code checks the conjunction exactly.
+Attacking a creature will trigger all other creatures in the room to become aggressive and attack you back at the end of your turn. When you clear a room of all enemies, you heal and gain a permanent increase to your max health. Weapons have a base damage value and a critical strike chance — higher critical chance means more variance but higher potential damage.
 
-  - `drop <item>`
-    - Description: Remove an item from your inventory and drop it into the current room.
-    - Example: `drop rock`
+### Notes and Keys
 
-  - `put <item> in <container>` or `put <item> into <container>`
-    - Description: Put an item from your inventory into a container in the current room.
-    - Example: `put hat in bag` or `put hat into bag`
-    - Supported conjunctions: `in`, `into`.
+Notes can be read and taken as items. Keys are used automatically when you attempt to walk through a locked exit — as long as the matching key is in your inventory.
 
-  - `walk <direction>`
-    - Description: Move through an exit in the given cardinal direction.
-    - Example: `walk north`
-    - Notes: Directions are converted via the game's `Exit::strToDirection` mapping; use common words like `north`, `south`, `east`, `west`.
+---
 
-  - `attack <target>`
-    - Description: Attack a creature in the current room without a weapon (unarmed attack).
-    - Example: `attack guard`
+## Walkthrough
 
-  - `attack <target> with <weapon>` or `attack <target> using <weapon>`
-    - Description: Attack a creature using a specific weapon from your inventory.
-    - Example: `attack guard with stick` or `attack guard using rock`
-    - Supported conjunctions: `with`, `using`. If the weapon token is present but the conjunction is not recognized, the action will not be accepted.
+Below is a full guide to completing the game from start to finish.
 
-  - `quit`
-    - Description: Exit the game cleanly.
-    - Example: `quit`
+### House
 
-  - `help`
-    - Description: A help command exists in the code (`cmdHelp`) but it is currently an empty stub and does not display information.
+You start in your **House**. Use `look` to see what's around you. There is a **Chest** in the room — open it with `take <item> from chest` to retrieve its contents. Grab the **KeyToTheBackyard**, which you will need shortly. You can also take the **Rock**, a basic weapon that will help you in your first fight.
 
-- Error and behavior notes derived from the code
-  - The parser expects tokens separated by spaces; long or multi-word item names are not supported.
-  - Conjunctions must match the supported words exactly for compound commands (e.g., `from`, `in`, `into`, `with`, `using`).
-  - If an action requires an object that is not present (e.g., item not in room, container not present, weapon not in inventory), the game will print an explanatory message and ignore the action.
-  - You can execute multiple commands in a row using `;` (semicolon). Each chunk is parsed separately.
+### Backyard
 
-For implementation details and to see the exact acceptance/validation logic, inspect `ZorkGame/World.cpp` (functions such as `handleAction`, `handleCmdTakeFromContainerErrors`, `handleCmdPutErrors`, `handleAttack`, and `splitCommands`).
+Walk north to enter the **Backyard**. You will find a **Beetle** here. Kill it with `attack beetle` (optionally `with rock`). Once it dies, it drops the **KeyToTheHouse**, which unlocks the front door. Head back south to the House, then walk south again to exit through the front door into the **Frontyard**.
 
-License
-- See the repository `LICENSE` file for licensing details: https://github.com/CarrotCake002/ZorkGame?tab=MIT-1-ov-file#readme
+### Frontyard and Woods
 
-Support
-- For issues, feature requests, or contributions, open an issue or pull request on the GitHub repository.
+From the Frontyard, walk south to enter the **Woods**. Here you will find a **Dragonfly**. Kill it to obtain its **Leg**, a weapon with more damage than the Rock. At this point you have two paths forward.
+
+### Path A: Straight to the Castle
+
+From the Woods, walk east to reach the **Castle Entrance**, then north into the **Castle** itself. This is the faster route but you will miss out on stat increases and better loot from the dungeon.
+
+### Path B: Through the Dungeon (Recommended)
+
+From the Woods, walk west to enter the **Dungeon**. You will find an **Undead** enemy here. Defeat it to obtain the **Longsword**, the best weapon available before the castle. There is also a note in the dungeon hinting at a secret passage.
+
+Walk down to enter the **Dungeon Basement**, where you will face a double enemy fight against a **Demon** and a **Vermin**. Focus the weaker one first, then take down the other. The Demon drops **Fangs**, a weapon with high critical strike chance. Clearing this room will heal you and boost your stats.
+
+Walk east from the Dungeon Basement to find the secret passage leading to the **Castle Catacombs**. Here you will face the **Wraith**, a tough miniboss. It does not drop any items, but defeating it grants a stat increase. Walk up from the Catacombs to arrive in the **Castle**.
+
+### Castle
+
+Inside the **Castle** you will face the **Champion**, a powerful enemy carrying an **Axe**. Defeat it to claim the weapon and earn another stat boost. Walk up to reach the **Castle Rooftop**.
+
+### Castle Rooftop
+
+The Rooftop is your second double enemy fight, against a **Knight** and a **Gargoyle**. Target the Knight first as it is the weaker of the two. The Knight drops a **Mace**. Once both are defeated, walk north to enter the **Throne Room**.
+
+### Throne Room — Final Boss
+
+The **Dark Lord** awaits. This is the hardest fight in the game. Make sure you are well equipped before engaging. Once defeated, a short conclusion message will play and the game will keep running — you are free to explore, backtrack, or simply quit. The adventure is over.
+
+---
+
+## World Map
+
+```
+                        [Backyard]
+                             |
+                          [House]
+                             |
+                        [Frontyard]
+                             |
+     [Castle Entrance] -- [Woods] -- [Dungeon]
+               |                          |
+            [Castle] -- [Catacombs] -- [Dungeon B1]
+               |
+        [Castle Rooftop]
+               |
+         [Throne Room]
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE` for details.
