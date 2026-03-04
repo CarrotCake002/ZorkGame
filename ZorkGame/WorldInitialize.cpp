@@ -168,13 +168,6 @@ void World::initialize() {
     addEntity(new Note("WarningNote", "'You have come far, but this is where your journey ends.\nTurn back now, or face oblivion.'"));
     getTarget("ThroneRoom")->addItem(getTarget("DarkLord"));
     getTarget("ThroneRoom")->addItem(getTarget("WarningNote"));
-    // DELETE
-    currentRoom = static_cast<Room*>(getTarget("ThroneRoom"));
-    getPlayer()->addItem(getTarget("Mace"));
-    getPlayer()->addItem(getTarget("Fangs"));
-    getPlayer()->setMaxHealth(50);
-    getPlayer()->setHealth(50);
-    // END DELETE
 
     // Exits between CastleRooftop and ThroneRoom
     addEntity(new Exit("CastleRooftopToThroneRoom", Direction::NORTH, static_cast<Room*>(getTarget("CastleRooftop")), static_cast<Room*>(getTarget("ThroneRoom"))));
