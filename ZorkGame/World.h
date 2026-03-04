@@ -6,6 +6,7 @@
 #include "Room.h"
 #include "Exit.h"
 #include "Weapon.h"
+#include "Note.h"
 
 #include "Constants.h"
 
@@ -28,9 +29,12 @@ public:
 	World();
 	~World();
 
+	void initialize(void);
+
 	// DISPLAY COMMANDS
 	void cmdLook(void) const;
 	void cmdInventory(void) const;
+	void cmdStatus(void) const;
 	void cmdHelp(void) const;
 
 	// OTHER DISPLAY FUNCTIONS
@@ -72,6 +76,9 @@ public:
 	Player* getPlayer(void) const { return static_cast<Player*>(getTarget("Player")); };
 
 	void ennemyAttack(void);
+	void aggroEnnemies(void);
+	bool checkAllEnnemiesDead(void);
+	void healPlayer(void);
 
 	void addEntity(Entity* entity) { entities.push_back(entity); };
 

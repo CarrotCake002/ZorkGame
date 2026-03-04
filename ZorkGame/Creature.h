@@ -7,22 +7,25 @@
 class Creature : public Entity
 {
 public:
-	Creature(std::string name, std::string description, int health, int attackPower, EntityType type = EntityType::CREATURE);
+	Creature(std::string name, std::string description, int health, int attackPower, bool useWeapons = true, EntityType type = EntityType::CREATURE);
 	~Creature() = default;
 
 	void display(void) override;
+	void displayStatus(void);
 	void printContains(void) const;
 	std::string getPrintableName(void) const override;
 
 	std::string getName(void) const override { return name; };
 	int getHealth(void) const { return health; };
+	int getMaxHealth(void) const { return maxHealth; };
 	int getAttackPower(void) const { return attackPower; };
-	Weapon* getWeapon(void) const;
 	bool isAlive(void) const { return health > 0; };
 	bool isAggro(void) const { return aggro; };
+	Weapon* getWeapon(void) const;
 
 	void setAggro(bool aggro);
 	void setHealth(int health) { this->health = health; };
+	void setMaxHealth(int maxHealth) { this->maxHealth = maxHealth; };
 
 	
 	void takeDamage(int damage);
@@ -34,10 +37,12 @@ public:
 
 protected:
 	int health;
+	int maxHealth;
 	int attackPower;
-	int armor;
+	int armor = 0;
 	double critChance = 0.05;
 	bool aggro = false;
+	bool useWeapons;
 };
 
 using Player = Creature;

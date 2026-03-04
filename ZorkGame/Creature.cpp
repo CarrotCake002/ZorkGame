@@ -1,11 +1,9 @@
 #include "Creature.h"
 #include "Constants.h"
 
-Creature::Creature(std::string name, std::string description, int health, int attackPower, EntityType type)
-		: health(health), attackPower(attackPower) {
-	this->name = name;
-	this->description = description;
-	this->type = type;
+Creature::Creature(std::string name, std::string description, int health, int attackPower, bool useWeapons, EntityType type)
+		: Entity(name, description, type), maxHealth(health), attackPower(attackPower), useWeapons(useWeapons) {
+	this->health = maxHealth;
 	this->armor = 0;
 }
 
@@ -25,13 +23,15 @@ std::string Creature::getPrintableName(void) const {
 void Creature::display() {
 	if (type == EntityType::PLAYER)
 		return;
-	slowPrint(" - A dangerous " + getPrintableName() + ".\nIt is described as " + description + ".\n");
-	/*if (contains.size() > 0) {
-		slowPrint("It also has in its inventory:\n");
-		printContains();
-		std::cout << "\n";
-	}*/
+	printDialogue(" - A dangerous " + getPrintableName() + ".\nIt is described as " + description + ".\n");
 	std::cout << std::endl;
+}
+
+void Creature::displayStatus() {
+	std::string text_color = getType() == EntityType::PLAYER ? TEXT_COLOR_GREEN : TEXT_COLOR_RED;
+
+	printDialogue(" - " + text_color + getName() + TEXT_COLOR_RESET + " has " + TEXT_COLOR_GREEN + std::to_string(getHealth()) + TEXT_COLOR_RESET
+		+ " of his " + TEXT_COLOR_GREEN + std::to_string(getMaxHealth()) + TEXT_COLOR_RESET + " maximum health.\n");
 }
 
 void Creature::takeDamage(int damage) {
@@ -99,9 +99,11 @@ void Creature::setAggro(bool aggro) {
 }
 
 Weapon* Creature::getWeapon() const {
-	for (auto& item : contains) {
-		if (item->getType() == EntityType::WEAPON)
-			return static_cast<Weapon*>(item);
+	if (useWeapons) {
+		for (auto& item : contains) {
+			if (item->getType() == EntityType::WEAPON)
+				return static_cast<Weapon*>(item);
+		}
 	}
 	return nullptr;
 }

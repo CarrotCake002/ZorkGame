@@ -138,6 +138,7 @@
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="World.cpp" />
+    <ClCompile Include="WorldInitialize.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\..\PROJECTS\Masters\UPC\Admission Test\Advanced Programming for AAA Video Games_Online test.pdf" />
@@ -151,6 +152,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Exit.h" />
     <ClInclude Include="Key.h" />
+    <ClInclude Include="Note.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Weapon.h" />

@@ -3,20 +3,24 @@
 #define HELP R"help(
 Game Help
 
-Input and parsing
+Input and Parsing
 - Commands are typed at the prompt and are case-insensitive.
 - Input is parsed into up to four space-separated tokens: action, target, conjunction, container/weapon.
-- You can chain multiple commands on one line using `;` (semicolon). Example: `take coin; inventory`.
-- Multi-word names are not supported by the parser; use single-word item/creature/container names (for example: `key`, `rock`, `bag`).
+- You can chain multiple commands on one line using `;` (semicolon). Example: `take coin; walk north`.
+- Multi-word names are not supported by the parser; use single-word item/creature/container names (e.g. `key`, `rock`, `bag`).
 
 Commands
 - look
   - Show the contents of the current room (items, creatures, exits).
   - Example: `look`
 
-- inventory (or `i`)
+- inventory  (or `i`)
   - Show items currently carried by the player.
   - Example: `inventory`
+
+- status
+  - Display your current health and stats, as well as those of any creatures in the room.
+  - Example: `status`
 
 - take <item>
   - Pick up an item from the current room.
@@ -24,42 +28,47 @@ Commands
 
 - take <item> from <container>
   - Take an item out of a container in the current room.
-  - Conjunction: `from` (required in this form).
-  - Example: `take hat from bag`
+  - Conjunction: `from` (required).
+  - Example: `take key from chest`
 
 - drop <item>
   - Remove an item from your inventory and drop it into the current room.
   - Example: `drop rock`
 
 - put <item> in <container>  or  put <item> into <container>
-  - Put an item from your inventory into a container in the current room.
+  - Place an item from your inventory into a container in the current room.
   - Conjunctions: `in`, `into`.
-  - Example: `put hat in bag`
+  - Example: `put coin in chest`
 
 - walk <direction>
-  - Move through an exit in the given cardinal direction.
-  - Example: `walk north` (common directions: `north`, `south`, `east`, `west`).
+  - Move through an exit in the given direction. Some exits may be locked and require a key.
+  - Example: `walk north`  (common directions: `north`, `south`, `east`, `west`)
 
 - attack <target>
-  - Attack a creature in the current room without a specified weapon (unarmed attack).
+  - Attack a creature in the current room unarmed.
   - Example: `attack guard`
 
 - attack <target> with <weapon>  or  attack <target> using <weapon>
   - Attack a creature using a weapon from your inventory.
-  - Conjunctions: `with`, `using` (or omit conjunction for some forms; the game accepts empty conjunction for attack).
-  - Example: `attack guard with stick`
-
-- quit
-  - Exit the game.
+  - Conjunctions: `with`, `using`.
+  - Example: `attack guard with sword`
 
 - help
   - Show this help text.
 
+- quit
+  - Exit the game.
+
 Notes
-- Commands that reference objects will print an explanatory message if the object is missing, the type is incorrect (e.g., trying to take a creature), or the required conjunction is invalid.
+- Only items, weapons, and keys can be picked up. Creatures and rooms cannot be taken.
+- You can only attack creatures, and only with weapons.
+- Items can only be placed into containers. Creatures do not accept items.
+- Defeating all enemies in a room will restore your health and increase your max HP.
+- If you die, use `reset` to restart or `quit` to close the game.
 
 Enjoy exploring!
 )help"
+
 
 #define INTRO R"intro(
 
