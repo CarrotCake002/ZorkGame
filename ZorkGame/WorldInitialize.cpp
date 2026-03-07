@@ -25,7 +25,7 @@ void World::initialize() {
     /* BACKYARD */
     // Creation of the Backyard and its content
     addEntity(new Room("Backyard", "the backyard to your house. You have heard creatures festering from time to time..."));
-    addEntity(new Creature("Beetle", "a large beetle. It doesn't look aggressive, but who knows what you could find inside it..", 5, 1));
+    addEntity(new Creature("Beetle", "a large beetle. It doesn't look aggressive, but who knows what you could find inside it..", 3, 1));
     getTarget("Backyard")->addItem(getTarget("Beetle"));
 
     // Creation of the exit between the backyard and the House
@@ -56,10 +56,10 @@ void World::initialize() {
     /* WOODS */
     // Creation of the Woods
     addEntity(new Room("Woods", "a forest with short but dense trees."));
-    addEntity(new Creature("Dragonfly", "the largest you've ever seen. For some reason, every insect seems to be growing in size", 10, 2));
+    addEntity(new Creature("Dragonfly", "the largest you've ever seen. For some reason, every insect seems to be growing in size", 6, 2));
     getTarget("Woods")->addItem(getTarget("Dragonfly"));
 
-    addEntity(new Weapon("Leg", "a large dragonfly leg that can be used to attack.", 2, 0.1f));
+    addEntity(new Weapon("Leg", "a large dragonfly leg that can be used to attack.", 4, 0.1f));
     getTarget("Dragonfly")->addItem(getTarget("Leg"));
 
     // Creation of the exits between Frontyard and Woods
@@ -74,8 +74,8 @@ void World::initialize() {
     addEntity(new Room("Dungeon", "a lightly illuminated dungeon with many dangers waiting for an easy prey."));
     addEntity(new Creature("Undead", "an undead prisoner with a sheathed longsword on his belt. Lucky you, without brains he doesn't know how to use it..", 10, 5, false));
     getTarget("Dungeon")->addItem(getTarget("Undead"));
-    addEntity(new Weapon("Longsword", "a classic longsword used by knights, all now take by the Abyss.", 9, 0.2f));
-    getTarget("Undead")->addItem(getTarget("Longsword"));
+    addEntity(new Weapon("Sword", "a classic longsword used by knights, all now take by the Abyss.", 9, 0.2f));
+    getTarget("Undead")->addItem(getTarget("Sword"));
     addEntity(new Note("SecretNote", "'Dangers lurk in this dungeon, but if you are stupid enough to go deeper, and lucky enough to survive, you will find a secret entrance to the castle at the end.\nHowever if you want to reach it, make sure you are well equipped.'"));
     getTarget("Dungeon")->addItem(getTarget("SecretNote"));
 
