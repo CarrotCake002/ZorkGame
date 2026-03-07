@@ -22,7 +22,7 @@ public:
 	Exit(std::string name, Direction dir, Room* source, Room* destination, bool open = true, int id = 0);
 	~Exit() = default;
 
-	void display(void) override;
+	void display(void) const override;
 	std::string getPrintableDirection(void) const;
 
 	Direction getDirection(void) const { return direction; };

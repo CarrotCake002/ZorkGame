@@ -7,7 +7,7 @@ Exit::Exit(std::string name, Direction dir, Room* source, Room* destination, boo
 
 }
 
-void Exit::display() {
+void Exit::display() const {
 	slowPrint(" - An exit to the " + getPrintableDirection() + " which leads to " + TEXT_COLOR_CYAN + destination->getName() + TEXT_COLOR_RESET + ".\n");
 	std::cout << std::endl;
 }

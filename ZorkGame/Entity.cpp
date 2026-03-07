@@ -6,20 +6,22 @@ Entity::Entity(std::string name, std::string description, EntityType type) : nam
 }
 
 void Entity::printContains() const {
-	slowPrint("\t");
 	for (auto& elem : contains) {
-		slowPrint(elem->getPrintableName() + "\t");
+		slowPrint("\t");
+		elem->display();
 	}
 }
 
-void Entity::display() {
+void Entity::display() const {
 	std::string text_color = (type == EntityType::CONTAINER) ? TEXT_COLOR_BRIGHT_YELLOW : TEXT_COLOR_YELLOW;
 
-	slowPrint(" - A " + text_color + name + TEXT_COLOR_RESET + " which is described as " + description + ".\n");
+	slowPrint("- A " + text_color + name + TEXT_COLOR_RESET + " which is described as " + description + ".\n");
 	if (contains.size() > 0) {
-		slowPrint("It also contains:\n");
+		slowPrint("It contains:\n");
 		printContains();
-		slowPrint("\n");
+	}
+	else if (contains.size() == 0 && type == EntityType::CONTAINER) {
+		slowPrint("It is empty.\n");
 	}
 	std::cout << std::endl;
 }

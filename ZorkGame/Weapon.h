@@ -9,6 +9,8 @@ public:
 	Weapon(std::string name, std::string description, int damage, double critChance = 0.05f);
 	~Weapon() = default;
 
+	void display(void) const override;
+
 	int getDamage(void) const { return damage; };
 	double getCritChance(void) const { return critChance; };
 

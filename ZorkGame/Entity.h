@@ -13,6 +13,7 @@ enum class EntityType
 	PLAYER,
 	ITEM,
 	WEAPON,
+	ARMOR,
 	CONTAINER,
 	CREATURE,
 	ROOM,
@@ -28,15 +29,15 @@ public:
 	Entity(std::string name, std::string description, EntityType type = EntityType::ITEM);
 	virtual ~Entity() = default;
 
-	virtual void display(void);
+	virtual void display(void) const;
 	virtual void printContains(void) const;
 	virtual std::string getPrintableName(void) const;
 
 	virtual void addItem(Entity* item);
 	virtual bool hasItem(std::string name) const;
-	Entity* getItem(std::string name) const;
 	Entity* removeItem(std::string name);
 
+	Entity* getItem(std::string name) const;
 	virtual std::string getName(void) const { return name; };
 	virtual std::string getDescription(void) const { return description; };
 	virtual EntityType getType(void) const { return type; };
