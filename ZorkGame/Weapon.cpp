@@ -6,5 +6,5 @@ Weapon::Weapon(std::string name, std::string description, int damage, double cri
 }
 
 void Weapon::display() const {
-	printDialogue("- A " + TEXT_COLOR_RED + getName() + TEXT_COLOR_RESET + " described as " + getDescription() + ".\n");
+	printDialogue(" - " + TEXT_COLOR_RED + getName() + TEXT_COLOR_RESET + " described as " + getDescription() + ".\n");
 }

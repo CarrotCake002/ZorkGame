@@ -34,6 +34,8 @@ public:
 	void setHealth(int health) { this->health = health; };
 	void setMaxHealth(int maxHealth) { this->maxHealth = maxHealth; };
 
+	int equip(Entity* item);
+	int unequip(std::string itemName);
 	
 	void takeDamage(int damage);
 	int calcDefensePower(void) const;

@@ -15,7 +15,7 @@ void Entity::printContains() const {
 void Entity::display() const {
 	std::string text_color = (type == EntityType::CONTAINER) ? TEXT_COLOR_BRIGHT_YELLOW : TEXT_COLOR_YELLOW;
 
-	slowPrint("- A " + text_color + name + TEXT_COLOR_RESET + " which is described as " + description + ".\n");
+	slowPrint(" - " + text_color + name + TEXT_COLOR_RESET + " which is described as " + description + ".\n");
 	if (contains.size() > 0) {
 		slowPrint("It contains:\n");
 		printContains();
