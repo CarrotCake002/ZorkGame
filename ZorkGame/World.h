@@ -7,6 +7,7 @@
 #include "Exit.h"
 #include "Weapon.h"
 #include "Note.h"
+#include "Armor.h"
 
 #include "Constants.h"
 

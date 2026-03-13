@@ -11,17 +11,15 @@ void World::initialize() {
 
     //  Creation of a Chest in the house with some items
     addEntity(new Entity("Chest", "an old chest that can contain a few items", EntityType::CONTAINER));
-    addEntity(new Entity("Shirt", "a dirty shirt for handy labor"));
-    addEntity(new Entity("Pants", "a pair of rugs some dare too call pants"));
-    addEntity(new Weapon("Rock", "a rock perfect to smash bugs", 1, 0.05f));
+    addEntity(new Armor("Shirt", "a dirty shirt for handy labor that will slightly protect you", 1, ArmorPart::BODY));
+    addEntity(new Armor("Pants", "a pair of rugs some dare too call pants", 1, ArmorPart::LEGS));
     getTarget("Chest")->addItem(getTarget("Shirt"));
     getTarget("Chest")->addItem(getTarget("Pants"));
-    getTarget("Chest")->addItem(getTarget("Rock"));
     getTarget("House")->addItem(getTarget("Chest"));
 
     // Creation of a key to the backyard and put it in the house chest
-    addEntity(new Key("KeyToTheBackyard", "a key to the Backyard", 1));
-    getTarget("Chest")->addItem(getTarget("KeyToTheBackyard"));
+    addEntity(new Key("BackyardKey", "a key to the Backyard", 1));
+    getTarget("Chest")->addItem(getTarget("BackyardKey"));
 
 
     /* BACKYARD */
@@ -37,15 +35,17 @@ void World::initialize() {
     getTarget("Backyard")->addItem(getTarget("BackyardToHouse"));
 
     // Creation of the key from the house to the frontyard
-    addEntity(new Key("KeyToTheHouse", "a key to the front door of your House", 2));
-    getTarget("Beetle")->addItem(getTarget("KeyToTheHouse"));
+    addEntity(new Key("HouseKey", "a key to the front door of your House", 2));
+    getTarget("Beetle")->addItem(getTarget("HouseKey"));
 
 
     /* FRONTYARD */
     // Creation of the Frontyard room south of the House
     addEntity(new Room("Frontyard", "the front of to house"));
-    addEntity(new Entity("Hat", "a burnt hat to avoid sunburn."));
+    addEntity(new Armor("Hat", "a burnt hat to avoid sunburn.", 1, ArmorPart::HEAD));
+    addEntity(new Weapon("Rock", "a rock perfect to smash bugs", 2, 0.05f));
     getTarget("Frontyard")->addItem(getTarget("Hat"));
+    getTarget("Frontyard")->addItem(getTarget("Rock"));
 
     // Creation of the exits between house and frontyard
     addEntity(new Exit("HouseToFrontyard", Direction::SOUTH, static_cast<Room*>(getTarget("House")), static_cast<Room*>(getTarget("Frontyard")), false, 2));
