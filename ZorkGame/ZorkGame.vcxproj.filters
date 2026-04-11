@@ -48,6 +48,9 @@
     <ClCompile Include="WorldInitialize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Armor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\..\PROJECTS\Masters\UPC\Admission Test\Advanced Programming for AAA Video Games_Online test.pdf">
@@ -88,6 +91,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Note.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Armor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

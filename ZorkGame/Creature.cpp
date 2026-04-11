@@ -4,14 +4,6 @@
 Creature::Creature(std::string name, std::string description, int health, int attackPower, bool useWeapons, EntityType type)
 		: Entity(name, description, type), maxHealth(health), attackPower(attackPower), useWeapons(useWeapons) {
 	this->health = maxHealth;
-	this->armor = 0;
-}
-
-void Creature::printContains() const {
-	slowPrint("\t");
-	for (auto& elem : contains) {
-		slowPrint(elem->getPrintableName() + "\t");
-	}
 }
 
 std::string Creature::getPrintableName(void) const {
@@ -20,22 +12,32 @@ std::string Creature::getPrintableName(void) const {
 	return TEXT_COLOR_RED + getName() + TEXT_COLOR_RESET;
 }
 
-void Creature::display() {
+void Creature::display() const {
 	if (type == EntityType::PLAYER)
 		return;
 	printDialogue(" - A dangerous " + getPrintableName() + ".\nIt is described as " + description + ".\n");
-	std::cout << std::endl;
 }
 
-void Creature::displayStatus() {
+void Creature::displayStatus() const {
 	std::string text_color = getType() == EntityType::PLAYER ? TEXT_COLOR_GREEN : TEXT_COLOR_RED;
 
 	printDialogue(" - " + text_color + getName() + TEXT_COLOR_RESET + " has " + TEXT_COLOR_GREEN + std::to_string(getHealth()) + TEXT_COLOR_RESET
-		+ " of his " + TEXT_COLOR_GREEN + std::to_string(getMaxHealth()) + TEXT_COLOR_RESET + " maximum health.\n");
+		+ " of his " + TEXT_COLOR_GREEN + std::to_string(getMaxHealth()) + TEXT_COLOR_RESET + " maximum health and "
+		+ TEXT_COLOR_BLUE + std::to_string(calcDefensePower()) + TEXT_COLOR_RESET + " defense.\n");
+}
+
+int Creature::calcDefensePower() const {
+	int defense = 0;
+
+	defense += baseArmor;
+	defense += eq.head == nullptr ? 0 : eq.head->getDefense();
+	defense += eq.body == nullptr ? 0 : eq.body->getDefense();
+	defense += eq.legs == nullptr ? 0 : eq.legs->getDefense();
+	return defense;
 }
 
 void Creature::takeDamage(int damage) {
-	int totalDamage = damage - armor;
+	int totalDamage = damage - calcDefensePower();
 
     if (totalDamage < 0) {
         printDialogue("The " + getPrintableName() + "'s armor is too sturdy and absorbs all the damage.\n");
