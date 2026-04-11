@@ -7,5 +7,5 @@ Armor::Armor(std::string name, std::string description, int defense, ArmorPart p
 }
 
 void Armor::display() const {
-	printDialogue("- A " + TEXT_COLOR_BLUE + getName() + TEXT_COLOR_RESET + " which has " + TEXT_COLOR_BLUE + std::to_string(getDefense()) + TEXT_COLOR_RESET + " defense.\n");
+	printDialogue("- " + TEXT_COLOR_BLUE + getName() + TEXT_COLOR_RESET + " which has " + TEXT_COLOR_BLUE + std::to_string(getDefense()) + TEXT_COLOR_RESET + " defense.\n");
 }

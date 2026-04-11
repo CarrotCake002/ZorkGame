@@ -55,7 +55,9 @@ int World::handleCmdTakeErrors(std::string target, Entity* eTarget) const {
         printDialogue("You can't take a creature! You can only take items.\n");
         return 1;
     }
-    else if (eTarget->getType() != EntityType::ITEM && eTarget->getType() != EntityType::WEAPON && eTarget->getType() != EntityType::KEY && eTarget->getType() != EntityType::NOTE){
+    else if (eTarget->getType() != EntityType::ITEM && eTarget->getType() != EntityType::WEAPON
+        && eTarget->getType() != EntityType::KEY && eTarget->getType() != EntityType::NOTE
+        && eTarget->getType() != EntityType::ARMOR) {
         printDialogue("You can't take that... You can only take items!\n");
         return 1;
     }
@@ -119,7 +121,7 @@ int World::handleCmdWalkErrors(Exit* exit) const {
     return 0;
 }
 
-int World::handleAttack(Entity* target, Entity* eWeapon, std::string weapon) const {
+int World::handleCmdAttackErrors(Entity* target, Entity* eWeapon, std::string weapon) const {
     if (target == nullptr) {
         printDialogue("There is no such creature here to attack!\n");
         return 1;
@@ -134,6 +136,26 @@ int World::handleAttack(Entity* target, Entity* eWeapon, std::string weapon) con
     }
 	if (eWeapon != nullptr && target->getType() != EntityType::CREATURE) {
         printDialogue("You can't attack that! You can only attack creatures!\n");
+        return 1;
+    }
+    return 0;
+}
+
+int World::handleCmdEquipErrors(Entity* item) const {
+    if (item == nullptr) {
+        printDialogue("You don't have that in your inventory.\n");
+        return 1;
+    }
+    if (item->getType() != EntityType::WEAPON && item->getType() != EntityType::ARMOR) {
+        printDialogue("You can only equip weapons and armor.\n");
+        return 1;
+    }
+    return 0;
+}
+
+int World::handleCmdUnequipErrors(std::string target) const {
+    if (target.empty()) {
+        printDialogue("What do you want to unequip?\n");
         return 1;
     }
     return 0;
@@ -251,6 +273,30 @@ int World::cmdWalk(std::string target) {
     return 0;
 }
 
+int World::cmdEquip(std::string target) {
+    Player* player = getPlayer();
+    Entity* eTarget = player->removeItem(target);
+
+    if (handleCmdEquipErrors(eTarget) != 0)
+        return 1;
+    player->equip(eTarget);
+    printDialogue("You equipped the " + eTarget->getName() + ".\n");
+    return 0;
+}
+
+int World::cmdUnequip(std::string target) {
+    Player* player = getPlayer();
+
+    if (handleCmdUnequipErrors(target) != 0)
+        return 1;
+    if (player->unequip(target) != 0) {
+        printDialogue("You don't have a " + target + " equipped!\n");
+        return 1;
+    }
+    printDialogue("You unequipped the " + target + ".\n");
+    return 0;
+}
+
 bool World::checkAllEnnemiesDead() {
     std::list<Entity*> contains = currentRoom->getContains();
     
@@ -303,7 +349,7 @@ int World::cmdAttack(std::string target, std::string weapon) {
     Entity* eWeapon = player->getItem(weapon);
     Creature* ennemy = nullptr;
 
-    if (handleAttack(eTarget, eWeapon, weapon) != 0)
+    if (handleCmdAttackErrors(eTarget, eWeapon, weapon) != 0)
         return 1;
 	ennemy = static_cast<Creature*>(eTarget);
     player->attack(ennemy, static_cast<Weapon*>(eWeapon));
@@ -388,6 +434,14 @@ int World::handleAction(std::string action, std::string target, std::string conj
         if (cmdAttack(target, container) != 0)
             return 1;
 	}
+    else if (action == "equip" && conjunction.empty()) {
+        if (cmdEquip(target) != 0)
+            return 1;
+    }
+    else if (action == "unequip" && conjunction.empty()) {
+        if (cmdUnequip(target) != 0)
+            return 1;
+    }
 	else if (handleSecretCommands(toLower(action), toLower(target), toLower(conjunction), toLower(container)) == 0) {
         return 1;
     }

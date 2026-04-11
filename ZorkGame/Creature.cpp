@@ -1,5 +1,6 @@
 #include "Creature.h"
 #include "Constants.h"
+#include "Utils.h"
 
 Creature::Creature(std::string name, std::string description, int health, int attackPower, bool useWeapons, EntityType type)
 		: Entity(name, description, type), maxHealth(health), attackPower(attackPower), useWeapons(useWeapons) {
@@ -53,13 +54,17 @@ int Creature::calcAttackPower(Weapon *weapon) const {
 	int totalAttackPower = attackPower;
 	double totalCritChance = critChance;
 
-	if (weapon != nullptr) {
+
+	if (weapon != nullptr) { // If a weapon was specified, attack with it
 		totalAttackPower += weapon->getDamage();
 		totalCritChance += weapon->getCritChance();
 	}
+	else if (eq.hands != nullptr) { // If no weapon was specified, check if he has one equipped
+		totalAttackPower += eq.hands->getDamage();
+		totalCritChance += eq.hands->getCritChance();
+	}
     if (rollCrit(totalCritChance)) {
         totalAttackPower *= 2;
-
         printDialogue(getPrintableName() + " lands a " + TEXT_COLOR_RED + "critical hit!" + TEXT_COLOR_RESET + " His attack power is doubled to " + TEXT_COLOR_RED + std::to_string(totalAttackPower) + TEXT_COLOR_RESET + "!\n");
     }
     else {
@@ -108,4 +113,50 @@ Weapon* Creature::getWeapon() const {
 		}
 	}
 	return nullptr;
+}
+
+int Creature::equip(Entity* item) {
+	Armor* armor = nullptr;
+
+	if (item->getType() == EntityType::WEAPON) {
+		if (eq.hands != nullptr) {
+			this->addItem(eq.hands);
+			eq.hands = nullptr;
+		}
+		eq.hands = static_cast<Weapon*>(item);
+		return 0;
+	}
+
+	armor = static_cast<Armor*>(item);
+	Armor*& armorSlot = armor->getPart() == ArmorPart::HEAD ? eq.head
+					: armor->getPart() == ArmorPart::BODY ? eq.body
+					: eq.legs;
+
+	if (armorSlot != nullptr)
+		this->addItem(armorSlot);
+	armorSlot = armor;
+	return 0;
+}
+
+int Creature::unequip(std::string itemName) {
+	if (eq.head != nullptr && toLower(eq.head->getName()) == itemName) {
+		this->addItem(eq.head);
+		eq.head = nullptr;
+	}
+	else if (eq.body != nullptr && toLower(eq.body->getName()) == itemName) {
+		this->addItem(eq.body);
+		eq.body = nullptr;
+	}
+	else if (eq.legs != nullptr && toLower(eq.legs->getName()) == itemName) {
+		this->addItem(eq.legs);
+		eq.legs = nullptr;
+	}
+	else if (eq.hands != nullptr && toLower(eq.hands->getName()) == itemName) {
+		this->addItem(eq.hands);
+		eq.hands = nullptr;
+	}
+	else {
+		return 1;
+	}
+	return 0;
 }
