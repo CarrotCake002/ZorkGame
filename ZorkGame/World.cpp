@@ -463,9 +463,12 @@ int World::handleCommand(std::string command) {
 
 int World::parseCommands(void) {
     std::string command;
+    int totalCmdSize = commands.size();
     int status = 0;
 
     while (commands.size() > 0 && !quit && getPlayer()->isAlive()) {
+        if (totalCmdSize != commands.size())
+            printDialogue(" ---------- \n");
         command = commands.front();
         commands.erase(commands.begin());
 		status = handleCommand(command);
