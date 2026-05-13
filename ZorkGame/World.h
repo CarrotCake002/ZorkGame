@@ -87,6 +87,10 @@ public:
 
 	void addEntity(Entity* entity) { entities.push_back(entity); };
 
+	std::string getSaveFilePath(void) const;
+	void saveGame(void) const;
+	nlohmann::json toJson(void) const;
+
 private:
 	bool quit = false;
 	std::vector<std::string> commands;

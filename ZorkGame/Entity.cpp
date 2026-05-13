@@ -71,3 +71,16 @@ Entity *Entity::removeItem(std::string target) {
 	}
 	return nullptr;
 }
+
+nlohmann::json Entity::toJson(void) const {
+	nlohmann::json j;
+
+	j["name"] = name;
+	j["description"] = description;
+	j["type"] = static_cast<int>(type);
+	j["contains"] = nlohmann::json::array();
+	for (auto& item : contains) {
+		j["contains"].push_back(item->toJson());
+	}
+	return j;
+}

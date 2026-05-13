@@ -274,4 +274,6 @@ void World::initialize() {
 
     addEntity(castleRooftopToThroneRoom);
     addEntity(throneRoomToCastleRooftop);
+
+    saveGame();
 }

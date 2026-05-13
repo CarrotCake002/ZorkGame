@@ -17,3 +17,4 @@ Exit* Room::getExit(Direction dir) const {
 	}
 	return nullptr;
 }
+

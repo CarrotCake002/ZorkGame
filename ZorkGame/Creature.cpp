@@ -160,3 +160,24 @@ int Creature::unequip(std::string itemName) {
 	}
 	return 0;
 }
+
+nlohmann::json Creature::toJson(void) const {
+	nlohmann::json j = Entity::toJson();
+
+	j["health"] = health;
+	j["maxHealth"] = maxHealth;
+	j["attackPower"] = attackPower;
+	j["baseArmor"] = baseArmor;
+	j["critChance"] = critChance;
+	j["aggro"] = aggro;
+	j["useWeapons"] = useWeapons;
+	if (eq.head != nullptr)
+		j["eq"]["head"] = eq.head->toJson();
+	if (eq.body != nullptr)
+		j["eq"]["body"] = eq.body->toJson();
+	if (eq.legs != nullptr)
+		j["eq"]["legs"] = eq.legs->toJson();
+	if (eq.hands != nullptr)
+		j["eq"]["hands"] = eq.hands->toJson();
+	return j;
+}

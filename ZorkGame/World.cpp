@@ -1,4 +1,5 @@
 #include "World.h"
+#include <fstream>
 
 World::World() {
     initialize();
@@ -500,4 +501,59 @@ int World::getInput(void) {
 	if (parseCommands() != 0)
         return 1;
     return 0;
+}
+
+nlohmann::json World::toJson(void) const {
+    nlohmann::json j;
+
+    j["entities"] = nlohmann::json::array();
+    for (auto& entity : entities) {
+        j["entities"].push_back(entity->toJson());
+    }
+    if (currentRoom != nullptr)
+        j["currentRoom"] = currentRoom->getName();
+    return j;
+}
+
+#include <Windows.h>
+
+std::string World::getSaveFilePath(void) const {
+    wchar_t filename[MAX_PATH] = L"";
+
+    OPENFILENAMEW ofn = {};
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = nullptr;
+    ofn.lpstrFilter = L"JSON Files\0*.json\0All Files\0*.*\0";
+    ofn.lpstrFile = filename;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrDefExt = L"json";
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+
+    if (GetSaveFileNameW(&ofn)) {
+        // convert wide string back to std::string
+        std::wstring ws(filename);
+        return std::string(ws.begin(), ws.end());
+    }
+    return "";
+}
+
+void World::saveGame(void) const {
+    nlohmann::json j = this->toJson();
+    std::string path = getSaveFilePath();
+
+    if (path.empty()) {
+        printDialogue("Save cancelled.\n");
+        return;
+    }
+
+    std::ofstream file(path);
+
+    if (file.is_open()) {
+        file << j.dump(2);
+        file.close();
+        printDialogue("Game saved successfully.\n");
+    }
+    else {
+        printDialogue("Error saving game.\n");
+    }
 }

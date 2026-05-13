@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <algorithm>
+#include <nlohmann/json.hpp>
 
 #include "Utils.h"
 
@@ -42,6 +43,8 @@ public:
 	virtual std::string getDescription(void) const { return description; };
 	virtual EntityType getType(void) const { return type; };
 	std::list<Entity*> getContains(void) const { return contains; };
+
+	virtual nlohmann::json toJson(void) const;
 
 protected:
 	EntityType type = EntityType::ITEM;

@@ -44,6 +44,8 @@ public:
 	bool dropItem(Room* currentRoom, Entity *item);
 	void die(Room* currentRoom);
 
+	nlohmann::json toJson(void) const override;
+
 protected:
 	int health;
 	int maxHealth;
