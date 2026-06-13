@@ -73,14 +73,14 @@ Entity *Entity::removeItem(std::string target) {
 }
 
 nlohmann::json Entity::toJson(void) const {
-	nlohmann::json j;
+	nlohmann::json entityJson;
 
-	j["name"] = name;
-	j["description"] = description;
-	j["type"] = static_cast<int>(type);
-	j["contains"] = nlohmann::json::array();
-	for (auto& item : contains) {
-		j["contains"].push_back(item->toJson());
+	entityJson["description"] = description;
+	entityJson["type"] = static_cast<int>(type);
+	if (contains.size() > 0) {
+		for (auto& item : contains) {
+			entityJson["items"][item->getName()] = item->toJson();
+		}
 	}
-	return j;
+	return entityJson;
 }

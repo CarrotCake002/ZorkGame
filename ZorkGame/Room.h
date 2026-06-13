@@ -15,6 +15,7 @@ public:
 	void addExit(Exit* exit) { exits.push_back(exit); };
 	Exit* getExit(Direction dir) const;
 
+	nlohmann::json toJson(void) const override;
 private:
 	std::vector<Exit*> exits;
 };

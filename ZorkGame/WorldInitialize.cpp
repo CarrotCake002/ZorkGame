@@ -1,4 +1,5 @@
 #include "World.h"
+#include "System.h"
 
 void World::initialize() {
     /* HOUSE */
@@ -275,5 +276,5 @@ void World::initialize() {
     addEntity(castleRooftopToThroneRoom);
     addEntity(throneRoomToCastleRooftop);
 
-    saveGame();
+    System::saveGame(this);
 }

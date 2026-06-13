@@ -136,6 +136,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="secretCommands.cpp" />
+    <ClCompile Include="System.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="World.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Key.h" />
     <ClInclude Include="Note.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="System.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="World.h" />
