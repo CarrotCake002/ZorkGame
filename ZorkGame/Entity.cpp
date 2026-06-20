@@ -72,6 +72,23 @@ Entity *Entity::removeItem(std::string target) {
 	return nullptr;
 }
 
+bool Entity::isItem(void) const {
+	EntityType type = getType();
+
+	if (type == EntityType::ITEM || type == EntityType::WEAPON || type == EntityType::ARMOR
+		|| type == EntityType::CONTAINER || type == EntityType::NOTE || type == EntityType::KEY)
+		return true;
+	return false;
+}
+
+bool Entity::isCreature(void) const {
+	EntityType type = getType();
+
+	if (type == EntityType::CREATURE)
+		return true;
+	return false;
+}
+
 nlohmann::json Entity::toJson(void) const {
 	nlohmann::json entityJson;
 

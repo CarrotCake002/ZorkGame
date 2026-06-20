@@ -504,12 +504,14 @@ int World::getInput(void) {
 }
 
 nlohmann::json World::toJson(void) const {
-    nlohmann::json j;
+    nlohmann::json j = nlohmann::json();
 
     for (auto& entity : entities) {
-        if (entity->getType() == EntityType::PLAYER)
+        EntityType type = entity->getType();
+
+        if (type == EntityType::PLAYER)
 			j["player"] = entity->toJson();
-        if (entity->getType() == EntityType::ROOM) {
+        else if (type == EntityType::ROOM) {
             j["rooms"][entity->getName()] = entity->toJson();
         }
     }

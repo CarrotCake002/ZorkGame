@@ -19,16 +19,13 @@ Exit* Room::getExit(Direction dir) const {
 }
 
 nlohmann::json Room::toJson(void) const {
-	nlohmann::json j = Entity::toJson();
+	nlohmann::json j = nlohmann::json();
 
-	for (auto& entity : contains) {
-		if (entity->getType() != EntityType::CREATURE && entity->getType() != EntityType::EXIT && entity->getType() != EntityType::PLAYER && entity->getType() != EntityType::NONE) {
+	for (Entity* entity : contains) {
+		if (entity->isItem()) {
 			j["items"][entity->getName()] = entity->toJson();
 		}
-	}
-
-	for (auto& entity : contains) {
-		if (entity->getType() == EntityType::CREATURE) {
+		else if (entity->isCreature()) {
 			j["enemies"][entity->getName()] = entity->toJson();
 		}
 	}

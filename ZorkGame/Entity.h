@@ -10,17 +10,17 @@
 
 enum class EntityType
 {
-	NONE,
-	PLAYER,
-	ITEM,
-	WEAPON,
-	ARMOR,
-	CONTAINER,
-	CREATURE,
-	ROOM,
-	KEY,
-	NOTE,
-	EXIT
+	NONE = 0,
+	PLAYER = 1,
+	ITEM = 2,
+	WEAPON = 3,
+	ARMOR = 4,
+	CONTAINER = 5,
+	CREATURE = 6,
+	ROOM = 7,
+	KEY = 8,
+	NOTE = 9,
+	EXIT = 10
 };
 
 class Entity
@@ -43,6 +43,9 @@ public:
 	virtual std::string getDescription(void) const { return description; };
 	virtual EntityType getType(void) const { return type; };
 	std::list<Entity*> getContains(void) const { return contains; };
+
+	bool isItem(void) const;
+	bool isCreature(void) const;
 
 	virtual nlohmann::json toJson(void) const;
 
